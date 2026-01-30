@@ -2,7 +2,7 @@
 // =========================
 // CONFIG
 // =========================
-const API = "https://unreproached-subangularly-cristopher.ngrok-free.dev";
+const API = "https://subpreputial-hypersuggestible-leonie.ngrok-free.dev";
 
 let lastImageUrl = "";
 let lastTextResult = "";
@@ -358,4 +358,5 @@ if (modeValue === "validacion") {
     setStatus("🔴 Error");
     openResultModal(e.message, "");
   }
+
 });
