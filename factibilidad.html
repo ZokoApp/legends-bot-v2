@@ -139,5 +139,39 @@ async function run(){
 }
 </script>
 
+  <!-- MODO TRABAJO -->
+<div id="workModal" style="display:none;position:fixed;inset:0;background:radial-gradient(circle at top,#0f172a,#020617);z-index:9999;align-items:center;justify-content:center;flex-direction:column;">
+  <img src="icons/icon-192.png" style="width:90px;animation:pulse 1.4s infinite;">
+  <strong style="margin-top:16px">🤖 Legends Bot trabajando</strong>
+  <div id="workText" style="margin-top:10px;color:#9ca3af;font-size:.85rem"></div>
+</div>
+
+<style>
+@keyframes pulse{
+0%{transform:scale(.9);opacity:.6}
+50%{transform:scale(1);opacity:1}
+100%{transform:scale(.9);opacity:.6}
+}
+</style>
+
+<!-- MODAL RESULTADO -->
+<div id="resultModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#020617;border-radius:20px;padding:18px;width:90%;max-width:480px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>Resultado</strong>
+      <button onclick="closeResult()" style="background:none;border:none;color:#aaa;font-size:18px">✖</button>
+    </div>
+
+    <pre id="modalText" style="margin-top:10px"></pre>
+    <img id="modalImg" style="width:100%;border-radius:12px;margin-top:10px"/>
+
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button onclick="downloadPDF()" style="flex:1;background:#2563eb;color:white;padding:10px;border-radius:12px;border:none">📄 PDF</button>
+      <button onclick="shareWhatsApp()" style="flex:1;background:#22c55e;color:white;padding:10px;border-radius:12px;border:none">📲 WhatsApp</button>
+      <button onclick="closeResult()" style="flex:1;background:transparent;border:1px solid #555;color:#ccc;padding:10px;border-radius:12px">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
