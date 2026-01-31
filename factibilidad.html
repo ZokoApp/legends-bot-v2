@@ -180,6 +180,15 @@ async function run(){
 
     if(res.status==="done"){
       hideWork();
+       const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
+history.unshift({
+  fecha:new Date().toLocaleString(),
+  tipo:"agenda", // o boleta / estado / factibilidad
+  datos:{ rut }, // o direccion/comuna
+  resultado:res.resultado || res.pdfUrl || "",
+  captura:res.capturaUrl || ""
+});
+localStorage.setItem("legends_history",JSON.stringify(history));
       openResult(res.resultado,res.capturaUrl);
       return;
     }
