@@ -51,6 +51,27 @@ animation:logoPulse 1.2s ease infinite;
 to{opacity:0;pointer-events:none}
 }
 
+.mode-buttons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.mode-btn{
+  background:linear-gradient(135deg,#1e293b,#020617);
+  border:1px solid #334155;
+  border-radius:14px;
+  padding:14px;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(56,189,248,.15);
+}
+
+.mode-btn:hover{
+  background:linear-gradient(135deg,#2563eb,#020617);
+}
+
 .container{max-width:420px;margin:0 auto;padding:28px 20px 40px}
 .card{background:rgba(255,255,255,0.04);border-radius:20px;padding:26px 22px 28px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
 
@@ -200,14 +221,17 @@ min-height:20px;
 </div>
 
 <div class="field">
-<label>MODO</label>
-<select id="mode">
-<option value="factibilidad">Factibilidad Técnica</option>
-<option value="validacion">Estado de Venta</option>
-<option value="agenda">Agenda</option>
-<option value="boleta">Boleta / Factura</option>
-</select>
+<label>OPERACIÓN</label>
+
+<div class="mode-buttons">
+  <button class="mode-btn" onclick="openMode('factibilidad')">🧪 Factibilidad</button>
+  <button class="mode-btn" onclick="openMode('validacion')">💰 Estado de Venta</button>
+  <button class="mode-btn" onclick="openMode('agenda')">📅 Agenda</button>
+  <button class="mode-btn" onclick="openMode('boleta')">🧾 Boleta</button>
 </div>
+</div>
+
+<input type="hidden" id="mode">
 
 <div class="field"><label>DIRECCIÓN</label><input id="address"></div>
 <div class="field"><label>COMUNA</label><input id="comuna"></div>
@@ -323,6 +347,23 @@ function logout(){
     <div class="modal-actions">
       <button class="btn-modal btn-pdf" onclick="saveNote()">Guardar</button>
       <button class="btn-modal btn-close" onclick="closeNote()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DE OPERACIÓN -->
+<div id="modeModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <strong id="modeTitle"></strong>
+      <button class="modal-close" onclick="closeMode()">✖</button>
+    </div>
+
+    <div class="modal-body" id="modeBody"></div>
+
+    <div class="modal-actions">
+      <button class="btn-modal btn-pdf" onclick="runFromModal()">Ejecutar</button>
+      <button class="btn-modal btn-close" onclick="closeMode()">Cancelar</button>
     </div>
   </div>
 </div>
