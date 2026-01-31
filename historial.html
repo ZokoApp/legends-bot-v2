@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historial - Legends Bot</title>
+
+<script>
+const user = JSON.parse(localStorage.getItem("legends_user"));
+if (!user) location.href="login.html";
+</script>
+
+<style>
+body{
+margin:0;
+font-family:system-ui;
+background:radial-gradient(circle at top,#0f172a,#020617);
+color:white;
+}
+
+.container{max-width:420px;margin:auto;padding:28px 20px;}
+.card{background:rgba(255,255,255,.04);border-radius:24px;padding:26px;box-shadow:0 40px 80px rgba(0,0,0,.6);}
+
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.top button{
+background:transparent;
+border:1px solid rgba(255,255,255,.15);
+color:#9ca3af;
+padding:6px 14px;
+border-radius:12px;
+cursor:pointer;
+}
+
+.item{
+background:#020617;
+border-radius:14px;
+padding:14px;
+margin-bottom:12px;
+font-size:.8rem;
+}
+
+.item strong{color:#3b82f6}
+
+.item button{
+margin-top:8px;
+padding:6px 12px;
+border-radius:10px;
+border:none;
+background:#2563eb;
+color:white;
+cursor:pointer;
+font-size:.75rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<div class="top">
+<h2>📜 Historial</h2>
+<button onclick="location.href='index.html'">Volver</button>
+</div>
+
+<div id="list"></div>
+
+</div>
+</div>
+
+<script>
+const list = document.getElementById("list");
+const history = JSON.parse(localStorage.getItem("legends_history") || "[]");
+
+if(history.length === 0){
+  list.innerHTML = "<p style='color:#888'>Sin operaciones aún</p>";
+}
+
+history.forEach((h,i)=>{
+  const div = document.createElement("div");
+  div.className="item";
+  div.innerHTML = `
+    <strong>${h.modo}</strong><br>
+    ${h.fecha}<br>
+    ${h.datos.direccion || h.datos.rut || ""}<br>
+    <button onclick="view(${i})">Ver resultado</button>
+  `;
+  list.appendChild(div);
+});
+
+function view(i){
+  const h = history[i];
+  alert(h.resultado);
+}
+</script>
+
+</body>
+</html>
