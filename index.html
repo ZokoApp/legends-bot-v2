@@ -5,99 +5,171 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Legends Bot</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b1220">
-
 <script>
 const user = JSON.parse(localStorage.getItem("legends_user"));
 if (!user) location.href="login.html";
 </script>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1220">
 
 <style>
 body{
 margin:0;
 font-family:system-ui;
 background:radial-gradient(circle at top,#0f172a,#020617);
-color:#e5e7eb;
-}
-.container{max-width:420px;margin:auto;padding:20px}
-.card{background:rgba(255,255,255,.04);border-radius:20px;padding:20px}
-.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
-.mode-card{
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.1);
-border-radius:18px;
-padding:22px;
 color:white;
-text-align:center;
+}
+
+.container{
+max-width:420px;
+margin:auto;
+padding:28px 20px;
+}
+
+.card{
+background:rgba(255,255,255,.04);
+border-radius:24px;
+padding:26px;
+box-shadow:0 40px 80px rgba(0,0,0,.6);
+}
+
+.user{
+display:flex;
+align-items:center;
+gap:12px;
+margin-bottom:20px;
+}
+
+.user img{width:50px;border-radius:50%}
+.user .name{font-weight:600}
+.user .role{font-size:.75rem;color:#9ca3af}
+
+.actions-top{
+display:flex;
+justify-content:flex-end;
+gap:10px;
+margin-bottom:10px;
+}
+
+.actions-top button{
+background:transparent;
+border:1px solid rgba(255,255,255,.15);
+color:#9ca3af;
+padding:6px 14px;
+border-radius:12px;
 cursor:pointer;
 }
-.mode-card.active{border-color:#3b82f6}
-.field{margin-bottom:14px}
-.field input, select{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:none;
-background:#020617;
-color:white;
+
+.title{
+text-align:center;
+color:#9ca3af;
+font-size:.75rem;
+letter-spacing:2px;
+margin:18px 0;
 }
-button{padding:14px;width:100%;border-radius:16px;border:none;background:#2563eb;color:white}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
+
+.card-btn{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.1);
+border-radius:20px;
+padding:26px 10px;
+text-align:center;
+cursor:pointer;
+transition:.25s;
+backdrop-filter:blur(8px);
+}
+
+.card-btn:hover{
+border-color:#3b82f6;
+box-shadow:0 30px 60px rgba(59,130,246,.3);
+transform:translateY(-3px);
+}
+
+.icon{font-size:28px;margin-bottom:8px}
+.text{font-weight:600;font-size:.9rem}
+
+.status{
+margin-top:20px;
+display:flex;
+gap:8px;
+align-items:center;
+font-size:.75rem;
+color:#9ca3af;
+}
+
+.dot{
+width:8px;
+height:8px;
+background:#22c55e;
+border-radius:50%;
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
 <div class="card">
 
-<div style="margin-bottom:15px">
-<strong id="userName"></strong>
+<div class="actions-top">
+<button onclick="location.href='historial.html'">Historial</button>
+<button onclick="logout()">Salir</button>
 </div>
 
-<select id="company">
-<option value="VTR">VTR</option>
-<option value="CLARO">CLARO</option>
-</select>
-
-<div class="mode-grid">
-<div class="mode-card" onclick="selectMode('boleta')">🧾 Boleta</div>
-<div class="mode-card" onclick="selectMode('validacion')">💰 Estado de Venta</div>
-<div class="mode-card" onclick="selectMode('factibilidad')">🧪 Factibilidad</div>
-<div class="mode-card" onclick="selectMode('agenda')">📅 Agenda</div>
-</div>
-
-<input type="hidden" id="mode">
-
-<div id="fieldDireccion" class="field" style="display:none">
-<input id="address" placeholder="Dirección">
-</div>
-
-<div id="fieldComuna" class="field" style="display:none">
-<input id="comuna" placeholder="Comuna">
-</div>
-
-<div id="fieldRut" class="field" style="display:none">
-<input id="rut" placeholder="RUT">
-</div>
-
-<button id="btnRun">Ejecutar</button>
-
+<div class="user">
+<img src="icons/icon-192.png">
+<div>
+<div class="name" id="userName"></div>
+<div class="role" id="userRole"></div>
 </div>
 </div>
 
-<script src="app.js"></script>
+<div class="title">¿QUÉ QUERÉS HACER?</div>
+
+<div class="grid">
+<div class="card-btn" onclick="location.href='boleta.html'">
+<div class="icon">🧾</div>
+<div class="text">Boleta</div>
+</div>
+
+<div class="card-btn" onclick="location.href='estado.html'">
+<div class="icon">💰</div>
+<div class="text">Estado de Venta</div>
+</div>
+
+<div class="card-btn" onclick="location.href='factibilidad.html'">
+<div class="icon">🧪</div>
+<div class="text">Factibilidad</div>
+</div>
+
+<div class="card-btn" onclick="location.href='agenda.html'">
+<div class="icon">📅</div>
+<div class="text">Agenda</div>
+</div>
+</div>
+
+<div class="status">
+<div class="dot"></div>
+Conectado a Legends Bot
+</div>
+
+</div>
+</div>
 
 <script>
 document.getElementById("userName").innerText = user.nombre;
+document.getElementById("userRole").innerText = user.rol;
 
-function selectMode(m){
-document.querySelectorAll(".mode-card").forEach(b=>b.classList.remove("active"));
-event.target.classList.add("active");
-mode.value = m;
-
-fieldDireccion.style.display = (m==="factibilidad")?"block":"none";
-fieldComuna.style.display = (m==="factibilidad")?"block":"none";
-fieldRut.style.display = (m!=="factibilidad")?"block":"none";
+function logout(){
+localStorage.removeItem("legends_user");
+location.href="login.html";
 }
 </script>
 
