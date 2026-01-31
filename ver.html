@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultado - Legends Bot</title>
+
+<script>
+const user = JSON.parse(localStorage.getItem("legends_user"));
+if (!user) location.href="login.html";
+</script>
+
+<style>
+body{
+margin:0;
+font-family:system-ui;
+background:radial-gradient(circle at top,#0f172a,#020617);
+color:white;
+}
+
+.container{max-width:480px;margin:auto;padding:20px;}
+.card{
+background:#020617;
+border-radius:20px;
+padding:18px;
+box-shadow:0 30px 60px rgba(0,0,0,.6);
+}
+
+img{
+width:100%;
+border-radius:14px;
+margin-top:12px;
+}
+
+button{
+margin-top:12px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+}
+
+.pdf{background:#2563eb;color:white;}
+.wsp{background:#22c55e;color:white;}
+.back{background:transparent;border:1px solid #555;color:#ccc;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<button class="back" onclick="location.href='historial.html'">⬅ Volver</button>
+
+<div class="card">
+<pre id="text"></pre>
+<img id="img">
+</div>
+
+<button class="pdf" onclick="download()">📄 Descargar PDF</button>
+<button class="wsp" onclick="share()">📲 Compartir WhatsApp</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+const data=JSON.parse(localStorage.getItem("last_result")||"{}");
+text.innerText=data.resultado||"";
+if(data.captura) img.src=data.captura;
+
+function share(){
+  let msg=data.resultado||"";
+  if(data.captura) msg+="\n\n📸 "+data.captura;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+
+async function download(){
+  const { jsPDF } = window.jspdf;
+  const pdf=new jsPDF();
+  const lines=pdf.splitTextToSize(data.resultado||"",180);
+  pdf.text(lines,10,10);
+
+  if(data.captura){
+    const imgData=await fetch(data.captura).then(r=>r.blob()).then(b=>new Promise(res=>{
+      const fr=new FileReader();
+      fr.onload=()=>res(fr.result);
+      fr.readAsDataURL(b);
+    }));
+    pdf.addImage(imgData,"PNG",10,50,180,100);
+  }
+
+  pdf.save("resultado_legends.pdf");
+}
+</script>
+
+</body>
+</html>
