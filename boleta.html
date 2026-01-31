@@ -134,7 +134,7 @@ async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 async function run(){
   const rut = document.getElementById("rut").value.trim();
-  if(!rut) return alert("Ingresá el RUT");
+  if(!rut) return alert("Ingresá Cuenta de Facturacion");
 
   status.innerText = "⏳ Enviando solicitud...";
   result.innerText = "";
