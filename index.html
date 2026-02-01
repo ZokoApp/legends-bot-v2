@@ -73,7 +73,6 @@ body{
 
 .user .name{
   font-weight:600;
-  letter-spacing:.2px;
 }
 
 .user .role{
@@ -99,7 +98,7 @@ body{
   background:var(--card-bg);
   border:1px solid var(--border-soft);
   border-radius:22px;
-  padding:28px 10px;
+  padding:26px 10px;
   text-align:center;
   cursor:pointer;
   transition:.25s ease;
@@ -109,6 +108,15 @@ body{
 .card-btn:hover{
   transform:translateY(-4px);
 }
+
+.card-btn:active{
+  transform:translateY(-1px) scale(.98);
+}
+
+.card-btn[data-accent="blue"]{ color:#3b82f6 }
+.card-btn[data-accent="gold"]{ color:#eab308 }
+.card-btn[data-accent="green"]{ color:#22c55e }
+.card-btn[data-accent="red"]{ color:#ef4444 }
 
 .card-btn[data-accent="blue"]:hover{
   border-color:#3b82f6;
@@ -131,8 +139,20 @@ body{
 }
 
 .icon{
-  font-size:26px;
-  margin-bottom:10px;
+  width:28px;
+  height:28px;
+  margin:0 auto 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.icon svg{
+  width:100%;
+  height:100%;
+  stroke:currentColor;
+  stroke-width:1.8;
+  fill:none;
 }
 
 .text{
@@ -186,25 +206,52 @@ body{
     <div class="title">¿QUÉ QUERÉS HACER?</div>
 
     <div class="grid">
+
       <div class="card-btn" data-accent="blue" onclick="location.href='boleta.html'">
-        <div class="icon">🧾</div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <line x1="8" y1="7" x2="16" y2="7"/>
+            <line x1="8" y1="11" x2="16" y2="11"/>
+            <line x1="8" y1="15" x2="13" y2="15"/>
+          </svg>
+        </div>
         <div class="text">Boleta</div>
       </div>
 
       <div class="card-btn" data-accent="gold" onclick="location.href='estado.html'">
-        <div class="icon">💰</div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M8 12h8"/>
+            <path d="M12 7v10"/>
+          </svg>
+        </div>
         <div class="text">Estado de Venta</div>
       </div>
 
       <div class="card-btn" data-accent="green" onclick="location.href='factibilidad.html'">
-        <div class="icon">🧪</div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 2v6l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2"/>
+            <line x1="8" y1="14" x2="16" y2="14"/>
+          </svg>
+        </div>
         <div class="text">Factibilidad</div>
       </div>
 
       <div class="card-btn" data-accent="red" onclick="location.href='agenda.html'">
-        <div class="icon">📅</div>
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <line x1="16" y1="3" x2="16" y2="7"/>
+            <line x1="8" y1="3" x2="8" y2="7"/>
+            <line x1="3" y1="11" x2="21" y2="11"/>
+          </svg>
+        </div>
         <div class="text">Agenda</div>
       </div>
+
     </div>
 
     <div class="status">
