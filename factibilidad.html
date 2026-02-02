@@ -44,7 +44,7 @@ body{
   display:flex;
   align-items:flex-start;
   gap:12px;
-  margin-bottom:36px;
+  margin-bottom:28px;
 }
 
 .header h1{
@@ -66,6 +66,16 @@ body{
   padding:6px 10px;
   color:var(--text-muted);
   cursor:pointer;
+}
+
+.company-badge{
+  margin-top:6px;
+  display:inline-block;
+  font-size:.65rem;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#86efac;
 }
 
 /* BODY */
@@ -90,9 +100,7 @@ body{
   outline:none;
 }
 
-.input::placeholder{
-  color:#6b7280;
-}
+.input::placeholder{ color:#6b7280; }
 
 .primary{
   margin-top:14px;
@@ -185,15 +193,16 @@ body{
       <div>
         <h1>Factibilidad</h1>
         <p>Evaluar factibilidad técnica por dirección</p>
+        <span class="company-badge" id="companyBadge"></span>
       </div>
     </div>
 
     <div class="body">
       <label class="label">Dirección</label>
-      <input id="direccion" class="input" placeholder="Ej: Av. Siempre Viva 742" />
+      <input id="direccion" class="input" placeholder="Ej: Av. Siempre Viva 742">
 
       <label class="label">Comuna</label>
-      <input id="comuna" class="input" placeholder="Ej: Providencia" />
+      <input id="comuna" class="input" placeholder="Ej: Providencia">
 
       <button class="primary" onclick="run()">Consultar Factibilidad</button>
     </div>
@@ -201,18 +210,14 @@ body{
   </div>
 </div>
 
-<!-- =========================
-     MODO TRABAJO
-========================= -->
+<!-- WORK -->
 <div id="workModal">
   <img src="icons/icon-192.png">
   <strong style="margin-top:16px">Legends Bot trabajando</strong>
   <div id="workText" style="margin-top:10px;color:#9ca3af;font-size:.85rem"></div>
 </div>
 
-<!-- =========================
-     MODAL RESULTADO
-========================= -->
+<!-- RESULT -->
 <div id="resultModal">
   <div class="result-card">
 
@@ -234,16 +239,24 @@ body{
 </div>
 
 <script>
-/* ⬇️ TODA TU LÓGICA ORIGINAL, SIN CAMBIOS ⬇️ */
+/* =========================
+   CONTEXTO EMPRESA
+========================= */
+const COMPANY = localStorage.getItem("legends_company") || "VTR";
+document.getElementById("companyBadge").innerText = "Empresa: " + COMPANY;
+
+/* =========================
+   LÓGICA FACTIBILIDAD
+========================= */
 
 const API="https://unreproached-subangularly-cristopher.ngrok-free.dev";
 
 const workMsgs=[
-"Validando dirección…",
-"Consultando cobertura…",
-"Conectando con Andes…",
-"Analizando servicios…",
-"Generando resultado…"
+  "Validando dirección…",
+  "Consultando cobertura…",
+  "Conectando con Andes ("+COMPANY+")…",
+  "Analizando servicios…",
+  "Generando resultado…"
 ];
 
 let w=0,workTimer=null;
@@ -270,9 +283,7 @@ function openResult(text,img){
   resultModal.style.display="flex";
 }
 
-function closeResult(){
-  resultModal.style.display="none";
-}
+function closeResult(){ resultModal.style.display="none"; }
 
 function shareWhatsApp(){
   let msg=lastText;
@@ -285,30 +296,30 @@ async function downloadPDF(){
   const pdf=new jsPDF();
   const lines=pdf.splitTextToSize(lastText,180);
   pdf.text(lines,10,10);
-  if(lastImg){
-    const img=await fetch(lastImg).then(r=>r.blob()).then(b=>new Promise(res=>{
-      const fr=new FileReader();
-      fr.onload=()=>res(fr.result);
-      fr.readAsDataURL(b);
-    }));
-    pdf.addImage(img,"PNG",10,50,180,100);
-  }
   pdf.save("factibilidad_legends.pdf");
 }
 
-async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 async function run(){
   const direccion=document.getElementById("direccion").value.trim();
   const comuna=document.getElementById("comuna").value.trim();
-  if(!direccion||!comuna) return alert("Completá dirección y comuna");
+  if(!direccion || !comuna) return alert("Completá dirección y comuna");
 
   showWork();
 
   const start=await fetch(API+"/factibilidad",{
     method:"POST",
-    headers:{"Content-Type":"application/json","ngrok-skip-browser-warning":"true"},
-    body:JSON.stringify({direccion,comuna,company:"VTR",email:user.email})
+    headers:{
+      "Content-Type":"application/json",
+      "ngrok-skip-browser-warning":"true"
+    },
+    body:JSON.stringify({
+      direccion,
+      comuna,
+      company: COMPANY,
+      email: user.email
+    })
   });
 
   const data=await start.json();
@@ -316,25 +327,28 @@ async function run(){
 
   while(true){
     await sleep(2000);
-    const poll=await fetch(pollUrl,{headers:{"ngrok-skip-browser-warning":"true"}});
+    const poll=await fetch(pollUrl,{
+      headers:{"ngrok-skip-browser-warning":"true"}
+    });
     const res=await poll.json();
 
     if(res.status==="queued"||res.status==="running") continue;
 
+    hideWork();
+
     if(res.status==="error"){
-      hideWork();
       openResult(res.error,"");
       return;
     }
 
     if(res.status==="done"){
-      hideWork();
       const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
       history.unshift({
         fecha:new Date().toLocaleString(),
         tipo:"factibilidad",
+        company: COMPANY,
         datos:{ direccion, comuna },
-        resultado:res.resultado || res.pdfUrl || "",
+        resultado:res.resultado || "",
         captura:res.capturaUrl || ""
       });
       localStorage.setItem("legends_history",JSON.stringify(history));
