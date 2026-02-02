@@ -90,10 +90,6 @@ body{
   outline:none;
 }
 
-.input::placeholder{
-  color:#6b7280;
-}
-
 .primary{
   margin-top:10px;
   background:linear-gradient(135deg,#3b82f6,#2563eb);
@@ -106,15 +102,18 @@ body{
   cursor:pointer;
 }
 
-/* WORK MODAL */
-#workModal{
+/* MODALS */
+#workModal,#resultModal{
   display:none;
   position:fixed;
   inset:0;
-  background:var(--bg-main);
   z-index:9999;
   align-items:center;
   justify-content:center;
+}
+
+#workModal{
+  background:var(--bg-main);
   flex-direction:column;
 }
 
@@ -129,15 +128,8 @@ body{
   100%{transform:scale(.9);opacity:.6}
 }
 
-/* RESULT MODAL */
 #resultModal{
-  display:none;
-  position:fixed;
-  inset:0;
   background:rgba(0,0,0,.85);
-  z-index:10000;
-  align-items:center;
-  justify-content:center;
 }
 
 .result-card{
@@ -172,6 +164,20 @@ body{
 .btn-pdf{background:#2563eb;color:white}
 .btn-wa{background:#22c55e;color:white}
 .btn-close{background:transparent;border:1px solid #555;color:#ccc}
+
+#btnVerBoleta{
+  display:none;
+  width:100%;
+  margin-top:16px;
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-size:.95rem;
+  font-weight:600;
+  color:white;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -179,7 +185,6 @@ body{
 
 <div class="screen">
   <div class="card">
-
     <div class="header">
       <button class="back" onclick="location.href='index.html'">← Volver</button>
       <div>
@@ -190,49 +195,39 @@ body{
 
     <div class="body">
       <label class="label">Cuenta de facturación</label>
-      <input id="rut" class="input" placeholder="Ej: 12345678" />
+      <input id="rut" class="input" placeholder="Ej: 12345678">
       <button class="primary" onclick="run()">Buscar Boleta</button>
     </div>
-
   </div>
 </div>
 
-<!-- =========================
-     MODO TRABAJO
-========================= -->
 <div id="workModal">
   <img src="icons/icon-192.png">
   <strong style="margin-top:16px">Legends Bot trabajando</strong>
   <div id="workText" style="margin-top:10px;color:#9ca3af;font-size:.85rem"></div>
 </div>
 
-<!-- =========================
-     MODAL RESULTADO
-========================= -->
 <div id="resultModal">
   <div class="result-card">
-
     <div class="result-top">
       <strong>Resultado</strong>
       <button onclick="closeResult()" style="background:none;border:none;color:#aaa;font-size:18px">✖</button>
     </div>
 
     <pre id="modalText" style="margin-top:10px"></pre>
-    <img id="modalImg" style="width:100%;border-radius:12px;margin-top:10px"/>
+
+    <button id="btnVerBoleta" onclick="verBoleta()">🔎 Ver boleta</button>
 
     <div class="result-actions">
       <button class="btn-pdf" onclick="downloadPDF()">PDF</button>
       <button class="btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
       <button class="btn-close" onclick="closeResult()">Cerrar</button>
     </div>
-
   </div>
 </div>
 
 <script>
-/* ⬇️ TODA TU LÓGICA ORIGINAL, SIN CAMBIOS ⬇️ */
-
-const API = "https://subpreputial-hypersuggestible-leonie.ngrok-free.dev";
+const API="https://subpreputial-hypersuggestible-leonie.ngrok-free.dev";
 
 const workMsgs=[
 "Conectando con sistemas corporativos…",
@@ -242,8 +237,8 @@ const workMsgs=[
 "Generando boleta…"
 ];
 
-let workI=0, workTimer=null;
-let lastText="", lastImg="";
+let workI=0,workTimer=null;
+let lastText="", lastImg="", lastLink="";
 
 function showWork(){
   workModal.style.display="flex";
@@ -261,9 +256,24 @@ function hideWork(){
 function openResult(text,img){
   lastText=text||"";
   lastImg=img||"";
-  modalText.innerText=lastText;
-  modalImg.src=lastImg||"";
+  lastLink="";
+
+  modalText.innerText="";
+  btnVerBoleta.style.display="none";
+
+  if(lastText.startsWith("http")){
+    lastLink=lastText;
+    modalText.innerText="Boleta disponible";
+    btnVerBoleta.style.display="block";
+  }else{
+    modalText.innerText=lastText;
+  }
+
   resultModal.style.display="flex";
+}
+
+function verBoleta(){
+  if(lastLink) window.open(lastLink,"_blank");
 }
 
 function closeResult(){
@@ -272,24 +282,8 @@ function closeResult(){
 
 function shareWhatsApp(){
   let msg=lastText;
-  if(lastImg) msg+="\n\n📸 "+lastImg;
+  if(lastLink) msg+="\n"+lastLink;
   window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
-
-async function downloadPDF(){
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  const lines = pdf.splitTextToSize(lastText,180);
-  pdf.text(lines,10,10);
-  if(lastImg){
-    const img=await fetch(lastImg).then(r=>r.blob()).then(b=>new Promise(res=>{
-      const fr=new FileReader();
-      fr.onload=()=>res(fr.result);
-      fr.readAsDataURL(b);
-    }));
-    pdf.addImage(img,"PNG",10,50,180,100);
-  }
-  pdf.save("boleta_legends.pdf");
 }
 
 async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
@@ -316,24 +310,15 @@ async function run(){
 
     if(res.status==="queued"||res.status==="running") continue;
 
+    hideWork();
+
     if(res.status==="error"){
-      hideWork();
       openResult(res.error,"");
       return;
     }
 
     if(res.status==="done"){
-      hideWork();
-      const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
-      history.unshift({
-        fecha:new Date().toLocaleString(),
-        tipo:"boleta",
-        datos:{ rut },
-        resultado:res.resultado || res.pdfUrl || "",
-        captura:res.capturaUrl || ""
-      });
-      localStorage.setItem("legends_history",JSON.stringify(history));
-      openResult(res.pdfUrl || res.mensaje,res.capturaUrl);
+      openResult(res.pdfUrl || res.mensaje || res.resultado,"");
       return;
     }
   }
