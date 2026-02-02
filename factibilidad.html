@@ -11,68 +11,212 @@ if (!user) location.href="login.html";
 </script>
 
 <style>
-body{
-margin:0;
-font-family:system-ui;
-background:radial-gradient(circle at top,#0f172a,#020617);
-color:white;
+:root{
+  --bg-main: radial-gradient(circle at top,#0f172a,#020617);
+  --card-bg: rgba(255,255,255,.04);
+  --border-soft: rgba(255,255,255,.1);
+  --text-muted:#9ca3af;
 }
-.container{max-width:420px;margin:auto;padding:28px 20px;}
-.card{background:rgba(255,255,255,.04);border-radius:24px;padding:26px;box-shadow:0 40px 80px rgba(0,0,0,.6);}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.top button{background:transparent;border:1px solid rgba(255,255,255,.15);color:#9ca3af;padding:6px 14px;border-radius:12px;cursor:pointer;}
-.field{margin-bottom:14px;}
-.field input{width:100%;padding:14px;border-radius:14px;border:none;background:#020617;color:white;}
-button.main{width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,#2563eb,#1e40af);color:white;font-weight:600;cursor:pointer;margin-top:10px;}
+
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  background:var(--bg-main);
+  color:white;
+}
+
+.screen{
+  max-width:420px;
+  margin:auto;
+  padding:28px 20px;
+}
+
+.card{
+  background:var(--card-bg);
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 50px 120px rgba(0,0,0,.65);
+  backdrop-filter:blur(12px);
+}
+
+/* HEADER */
+.header{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:36px;
+}
+
+.header h1{
+  margin:0;
+  font-size:1.4rem;
+  font-weight:600;
+}
+
+.header p{
+  margin:4px 0 0;
+  font-size:.75rem;
+  color:var(--text-muted);
+}
+
+.back{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border-soft);
+  border-radius:14px;
+  padding:6px 10px;
+  color:var(--text-muted);
+  cursor:pointer;
+}
+
+/* BODY */
+.body{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.label{
+  font-size:.75rem;
+  color:var(--text-muted);
+}
+
+.input{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border-soft);
+  border-radius:16px;
+  padding:16px;
+  font-size:1rem;
+  color:white;
+  outline:none;
+}
+
+.input::placeholder{
+  color:#6b7280;
+}
+
+.primary{
+  margin-top:14px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-size:.95rem;
+  font-weight:600;
+  color:white;
+  cursor:pointer;
+}
+
+/* WORK MODAL */
+#workModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:var(--bg-main);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+
+#workModal img{
+  width:90px;
+  animation:pulse 1.4s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(.9);opacity:.6}
+  50%{transform:scale(1);opacity:1}
+  100%{transform:scale(.9);opacity:.6}
+}
+
+/* RESULT MODAL */
+#resultModal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:10000;
+  align-items:center;
+  justify-content:center;
+}
+
+.result-card{
+  background:#020617;
+  border-radius:22px;
+  padding:20px;
+  width:90%;
+  max-width:480px;
+}
+
+.result-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.result-actions{
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+}
+
+.result-actions button{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn-pdf{background:#2563eb;color:white}
+.btn-wa{background:#22c55e;color:white}
+.btn-close{background:transparent;border:1px solid #555;color:#ccc}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-<div class="card">
+<div class="screen">
+  <div class="card">
 
-<div class="top">
-<h2>🧪 Factibilidad Técnica</h2>
-<button onclick="location.href='index.html'">Volver</button>
-</div>
+    <div class="header">
+      <button class="back" onclick="location.href='index.html'">← Volver</button>
+      <div>
+        <h1>Factibilidad</h1>
+        <p>Evaluar factibilidad técnica por dirección</p>
+      </div>
+    </div>
 
-<div class="field">
-<input id="direccion" placeholder="Dirección">
-</div>
+    <div class="body">
+      <label class="label">Dirección</label>
+      <input id="direccion" class="input" placeholder="Ej: Av. Siempre Viva 742" />
 
-<div class="field">
-<input id="comuna" placeholder="Comuna">
-</div>
+      <label class="label">Comuna</label>
+      <input id="comuna" class="input" placeholder="Ej: Providencia" />
 
-<button class="main" onclick="run()">Consultar</button>
+      <button class="primary" onclick="run()">Consultar Factibilidad</button>
+    </div>
 
-</div>
+  </div>
 </div>
 
 <!-- =========================
-   MODO TRABAJO
+     MODO TRABAJO
 ========================= -->
-<div id="workModal" style="display:none;position:fixed;inset:0;background:radial-gradient(circle at top,#0f172a,#020617);z-index:9999;align-items:center;justify-content:center;flex-direction:column;">
-  <img src="icons/icon-192.png" style="width:90px;animation:pulse 1.4s infinite;">
-  <strong style="margin-top:16px">🤖 Legends Bot trabajando</strong>
+<div id="workModal">
+  <img src="icons/icon-192.png">
+  <strong style="margin-top:16px">Legends Bot trabajando</strong>
   <div id="workText" style="margin-top:10px;color:#9ca3af;font-size:.85rem"></div>
 </div>
 
-<style>
-@keyframes pulse{
-0%{transform:scale(.9);opacity:.6}
-50%{transform:scale(1);opacity:1}
-100%{transform:scale(.9);opacity:.6}
-}
-</style>
-
 <!-- =========================
-   MODAL RESULTADO
+     MODAL RESULTADO
 ========================= -->
-<div id="resultModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10000;align-items:center;justify-content:center;">
-  <div style="background:#020617;border-radius:20px;padding:18px;width:90%;max-width:480px">
-    <div style="display:flex;justify-content:space-between;align-items:center">
+<div id="resultModal">
+  <div class="result-card">
+
+    <div class="result-top">
       <strong>Resultado</strong>
       <button onclick="closeResult()" style="background:none;border:none;color:#aaa;font-size:18px">✖</button>
     </div>
@@ -80,15 +224,18 @@ button.main{width:100%;padding:14px;border-radius:16px;border:none;background:li
     <pre id="modalText" style="margin-top:10px"></pre>
     <img id="modalImg" style="width:100%;border-radius:12px;margin-top:10px"/>
 
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button onclick="downloadPDF()" style="flex:1;background:#2563eb;color:white;padding:10px;border-radius:12px;border:none">📄 PDF</button>
-      <button onclick="shareWhatsApp()" style="flex:1;background:#22c55e;color:white;padding:10px;border-radius:12px;border:none">📲 WhatsApp</button>
-      <button onclick="closeResult()" style="flex:1;background:transparent;border:1px solid #555;color:#ccc;padding:10px;border-radius:12px">Cerrar</button>
+    <div class="result-actions">
+      <button class="btn-pdf" onclick="downloadPDF()">PDF</button>
+      <button class="btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
+      <button class="btn-close" onclick="closeResult()">Cerrar</button>
     </div>
+
   </div>
 </div>
 
 <script>
+/* ⬇️ TODA TU LÓGICA ORIGINAL, SIN CAMBIOS ⬇️ */
+
 const API="https://subpreputial-hypersuggestible-leonie.ngrok-free.dev";
 
 const workMsgs=[
@@ -123,7 +270,9 @@ function openResult(text,img){
   resultModal.style.display="flex";
 }
 
-function closeResult(){ resultModal.style.display="none"; }
+function closeResult(){
+  resultModal.style.display="none";
+}
 
 function shareWhatsApp(){
   let msg=lastText;
@@ -180,15 +329,15 @@ async function run(){
 
     if(res.status==="done"){
       hideWork();
-       const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
-history.unshift({
-  fecha:new Date().toLocaleString(),
-  tipo:"agenda", // o boleta / estado / factibilidad
-  datos:{ rut }, // o direccion/comuna
-  resultado:res.resultado || res.pdfUrl || "",
-  captura:res.capturaUrl || ""
-});
-localStorage.setItem("legends_history",JSON.stringify(history));
+      const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
+      history.unshift({
+        fecha:new Date().toLocaleString(),
+        tipo:"factibilidad",
+        datos:{ direccion, comuna },
+        resultado:res.resultado || res.pdfUrl || "",
+        captura:res.capturaUrl || ""
+      });
+      localStorage.setItem("legends_history",JSON.stringify(history));
       openResult(res.resultado,res.capturaUrl);
       return;
     }
