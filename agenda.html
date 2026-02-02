@@ -44,7 +44,7 @@ body{
   display:flex;
   align-items:flex-start;
   gap:12px;
-  margin-bottom:36px;
+  margin-bottom:28px;
 }
 
 .header h1{
@@ -66,6 +66,16 @@ body{
   padding:6px 10px;
   color:var(--text-muted);
   cursor:pointer;
+}
+
+.company-badge{
+  margin-top:6px;
+  display:inline-block;
+  font-size:.65rem;
+  padding:4px 8px;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#93c5fd;
 }
 
 /* BODY */
@@ -90,9 +100,7 @@ body{
   outline:none;
 }
 
-.input::placeholder{
-  color:#6b7280;
-}
+.input::placeholder{color:#6b7280;}
 
 .primary{
   margin-top:10px;
@@ -185,12 +193,13 @@ body{
       <div>
         <h1>Agenda</h1>
         <p>Consultar agenda del cliente</p>
+        <span class="company-badge" id="companyBadge"></span>
       </div>
     </div>
 
     <div class="body">
       <label class="label">RUT del cliente</label>
-      <input id="rut" class="input" placeholder="Ej: 12345678-9" />
+      <input id="rut" class="input" placeholder="Ej: 12345678-9">
       <button class="primary" onclick="run()">Consultar Agenda</button>
     </div>
 
@@ -230,16 +239,24 @@ body{
 </div>
 
 <script>
-/* ⬇️  JS ORIGINAL ⬇️ */
+/* =========================
+   CONTEXTO EMPRESA
+========================= */
+const COMPANY = localStorage.getItem("legends_company") || "VTR";
+document.getElementById("companyBadge").innerText = "Empresa: " + COMPANY;
+
+/* =========================
+   JS ORIGINAL (ajustado)
+========================= */
 
 const API="https://unreproached-subangularly-cristopher.ngrok-free.dev";
 
 const workMsgs=[
-"Conectando con sistemas corporativos…",
-"Autenticando credenciales…",
-"Consultando Andes…",
-"Procesando información…",
-"Generando resultado…"
+  "Conectando con sistemas corporativos…",
+  "Autenticando credenciales…",
+  "Consultando Andes ("+COMPANY+")…",
+  "Procesando información…",
+  "Generando resultado…"
 ];
 
 let workI=0, workTimer=null;
@@ -266,9 +283,7 @@ function openResult(text,img){
   resultModal.style.display="flex";
 }
 
-function closeResult(){
-  resultModal.style.display="none";
-}
+function closeResult(){ resultModal.style.display="none"; }
 
 function shareWhatsApp(){
   let msg=lastText;
@@ -281,18 +296,10 @@ async function downloadPDF(){
   const pdf = new jsPDF();
   const lines = pdf.splitTextToSize(lastText,180);
   pdf.text(lines,10,10);
-  if(lastImg){
-    const img=await fetch(lastImg).then(r=>r.blob()).then(b=>new Promise(res=>{
-      const fr=new FileReader();
-      fr.onload=()=>res(fr.result);
-      fr.readAsDataURL(b);
-    }));
-    pdf.addImage(img,"PNG",10,50,180,100);
-  }
   pdf.save("agenda_legends.pdf");
 }
 
-async function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 
 async function run(){
   const rut=document.getElementById("rut").value.trim();
@@ -302,8 +309,15 @@ async function run(){
 
   const start=await fetch(API+"/agenda",{
     method:"POST",
-    headers:{"Content-Type":"application/json","ngrok-skip-browser-warning":"true"},
-    body:JSON.stringify({rut,company:"VTR",email:user.email})
+    headers:{
+      "Content-Type":"application/json",
+      "ngrok-skip-browser-warning":"true"
+    },
+    body:JSON.stringify({
+      rut,
+      company: COMPANY,
+      email: user.email
+    })
   });
 
   const data=await start.json();
@@ -311,25 +325,28 @@ async function run(){
 
   while(true){
     await sleep(2000);
-    const poll=await fetch(pollUrl,{headers:{"ngrok-skip-browser-warning":"true"}});
+    const poll=await fetch(pollUrl,{
+      headers:{"ngrok-skip-browser-warning":"true"}
+    });
     const res=await poll.json();
 
     if(res.status==="queued"||res.status==="running") continue;
 
+    hideWork();
+
     if(res.status==="error"){
-      hideWork();
       openResult(res.error,"");
       return;
     }
 
     if(res.status==="done"){
-      hideWork();
       const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
       history.unshift({
         fecha:new Date().toLocaleString(),
         tipo:"agenda",
+        company: COMPANY,
         datos:{ rut },
-        resultado:res.resultado || res.pdfUrl || "",
+        resultado:res.resultado || "",
         captura:res.capturaUrl || ""
       });
       localStorage.setItem("legends_history",JSON.stringify(history));
