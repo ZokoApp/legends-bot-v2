@@ -65,9 +65,16 @@ small{
 }
 
 .result{
-  margin-top:20px;
+  margin-top:18px;
   white-space:pre-wrap;
   font-size:.9rem;
+  line-height:1.4;
+}
+
+img{
+  width:100%;
+  border-radius:14px;
+  margin-top:14px;
 }
 
 .actions{
@@ -90,11 +97,6 @@ small{
   color:white;
 }
 
-.btn-pdf{
-  background:#2563eb;
-  color:white;
-}
-
 .btn-wa{
   background:#22c55e;
   color:white;
@@ -105,12 +107,6 @@ small{
   border:1px solid #555;
   color:#ccc;
 }
-
-img{
-  width:100%;
-  border-radius:14px;
-  margin-top:14px;
-}
 </style>
 </head>
 
@@ -120,9 +116,9 @@ img{
   <div class="card">
 
     <div class="header">
-      <button class="back" onclick="location.href='historial.html'">← Historial</button>
+      <button class="back" onclick="volver()">← Historial</button>
       <div>
-        <h1 id="titulo"></h1>
+        <h1 id="titulo">Resultado</h1>
         <small id="fecha"></small>
       </div>
     </div>
@@ -132,61 +128,68 @@ img{
 
     <div class="actions">
       <button id="btnVer" class="btn-main" style="display:none" onclick="verLink()">🔎 Ver</button>
-      <button class="btn-pdf" onclick="downloadPDF()">PDF</button>
       <button class="btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
     </div>
 
     <div class="actions">
-      <button class="btn-back" onclick="location.href='historial.html'">Cerrar</button>
+      <button class="btn-back" onclick="volver()">Cerrar</button>
     </div>
 
   </div>
 </div>
 
 <script>
-const data = JSON.parse(localStorage.getItem("last_result"));
-if(!data){
-  location.href="historial.html";
-}
+/* =========================
+   CARGA SEGURA DE DATOS
+========================= */
+const raw = localStorage.getItem("last_result");
 
-document.getElementById("titulo").innerText = data.tipo.toUpperCase();
-document.getElementById("fecha").innerText  = data.fecha;
-
-const resEl = document.getElementById("resultado");
-const imgEl = document.getElementById("imagen");
-const btnVer = document.getElementById("btnVer");
-
-let link = "";
-
-if(data.resultado && data.resultado.startsWith("http")){
-  link = data.resultado;
-  resEl.innerText = "Resultado disponible";
-  btnVer.style.display = "block";
+if(!raw){
+  document.getElementById("resultado").innerText = "No hay resultado para mostrar.";
 }else{
-  resEl.innerText = data.resultado || "Sin resultado";
+  let data;
+  try{
+    data = JSON.parse(raw);
+  }catch(e){
+    document.getElementById("resultado").innerText = "Error leyendo resultado.";
+    throw e;
+  }
+
+  document.getElementById("titulo").innerText = (data.tipo || "Resultado").toUpperCase();
+  document.getElementById("fecha").innerText  = data.fecha || "";
+
+  const resEl = document.getElementById("resultado");
+  const imgEl = document.getElementById("imagen");
+  const btnVer = document.getElementById("btnVer");
+
+  let link = "";
+
+  if(data.resultado && typeof data.resultado === "string" && data.resultado.startsWith("http")){
+    link = data.resultado;
+    resEl.innerText = "Resultado disponible";
+    btnVer.style.display = "block";
+  }else{
+    resEl.innerText = data.resultado || "Sin resultado";
+  }
+
+  if(data.captura){
+    imgEl.src = data.captura;
+    imgEl.style.display = "block";
+  }
+
+  window.verLink = function(){
+    if(link) window.open(link,"_blank");
+  }
+
+  window.shareWhatsApp = function(){
+    let msg = data.resultado || "";
+    if(link) msg += "\n" + link;
+    window.open("https://wa.me/?text="+encodeURIComponent(msg));
+  }
 }
 
-if(data.captura){
-  imgEl.src = data.captura;
-  imgEl.style.display = "block";
-}
-
-function verLink(){
-  if(link) window.open(link,"_blank");
-}
-
-function shareWhatsApp(){
-  let msg = data.resultado || "";
-  if(link) msg += "\n" + link;
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
-
-async function downloadPDF(){
-  const { jsPDF } = window.jspdf;
-  const pdf=new jsPDF();
-  const lines=pdf.splitTextToSize(data.resultado || "",180);
-  pdf.text(lines,10,10);
-  pdf.save(data.tipo+"_legends.pdf");
+function volver(){
+  location.href="historial.html";
 }
 </script>
 
