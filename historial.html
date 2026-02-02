@@ -12,82 +12,83 @@ if (!user) location.href="login.html";
 
 <style>
 body{
-margin:0;
-font-family:system-ui;
-background:radial-gradient(circle at top,#0f172a,#020617);
-color:white;
+  margin:0;
+  font-family:system-ui;
+  background:radial-gradient(circle at top,#0f172a,#020617);
+  color:white;
 }
 
 .container{max-width:480px;margin:auto;padding:20px;}
 h2{margin-bottom:16px;}
 
 .item{
-background:#020617;
-padding:14px;
-border-radius:14px;
-margin-bottom:12px;
-font-size:.85rem;
+  background:#020617;
+  padding:14px;
+  border-radius:14px;
+  margin-bottom:12px;
+  font-size:.85rem;
 }
 
 .item small{color:#9ca3af;}
 
 .item button{
-margin-top:8px;
-margin-right:6px;
-padding:6px 10px;
-border-radius:8px;
-border:none;
-background:#2563eb;
-color:white;
-font-size:.75rem;
-cursor:pointer;
+  margin-top:8px;
+  margin-right:6px;
+  padding:6px 10px;
+  border-radius:8px;
+  border:none;
+  background:#2563eb;
+  color:white;
+  font-size:.75rem;
+  cursor:pointer;
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="container">
-<h2>📜 Historial</h2>
-<button onclick="location.href='index.html'">⬅ Volver</button>
-
-<div id="list"></div>
+  <h2>📜 Historial</h2>
+  <button onclick="location.href='index.html'">⬅ Volver</button>
+  <div id="list"></div>
 </div>
 
 <script>
-const list=document.getElementById("list");
-const history=JSON.parse(localStorage.getItem("legends_history")||"[]");
+const list = document.getElementById("list");
+const history = JSON.parse(localStorage.getItem("legends_history") || "[]");
 
-if(history.length===0){
-  list.innerHTML="<p>No hay consultas aún</p>";
+if(history.length === 0){
+  list.innerHTML = "<p>No hay consultas aún</p>";
 }
 
 history.forEach((h,i)=>{
-  const div=document.createElement("div");
-  div.className="item";
-  div.innerHTML=`
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `
     <strong>${h.tipo.toUpperCase()}</strong><br>
     <small>${h.fecha}</small><br>
-    <pre>${h.resultado.slice(0,120)}...</pre>
-    <button onclick="open(${i})">Ver</button>
+    <pre>${(h.resultado || "").slice(0,120)}...</pre>
+    <button onclick="verResultado(${i})">Ver</button>
     <button onclick="repeat(${i})">Repetir</button>
   `;
   list.appendChild(div);
 });
 
-function open(i){
-  const h=history[i];
-  localStorage.setItem("last_result",JSON.stringify(h));
-  location.href="ver.html";
+function verResultado(i){
+  const h = history[i];
+  localStorage.setItem("last_result", JSON.stringify(h));
+  window.location.href = "ver.html";
 }
 
 function repeat(i){
-  const h=history[i];
+  const h = history[i];
   if(h.tipo==="boleta") location.href="boleta.html?rut="+h.datos.rut;
   if(h.tipo==="estado") location.href="estado.html?rut="+h.datos.rut;
   if(h.tipo==="agenda") location.href="agenda.html?rut="+h.datos.rut;
-  if(h.tipo==="factibilidad") location.href="factibilidad.html?direccion="+encodeURIComponent(h.datos.direccion)+"&comuna="+encodeURIComponent(h.datos.comuna);
+  if(h.tipo==="factibilidad")
+    location.href="factibilidad.html?direccion="
+      +encodeURIComponent(h.datos.direccion)
+      +"&comuna="+encodeURIComponent(h.datos.comuna);
 }
 </script>
 
