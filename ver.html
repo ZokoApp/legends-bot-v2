@@ -11,86 +11,182 @@ if (!user) location.href="login.html";
 </script>
 
 <style>
-body{
-margin:0;
-font-family:system-ui;
-background:radial-gradient(circle at top,#0f172a,#020617);
-color:white;
+:root{
+  --bg-main: radial-gradient(circle at top,#0f172a,#020617);
+  --card-bg: rgba(255,255,255,.04);
+  --border-soft: rgba(255,255,255,.1);
+  --text-muted:#9ca3af;
 }
 
-.container{max-width:480px;margin:auto;padding:20px;}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont;
+  background:var(--bg-main);
+  color:white;
+}
+
+.screen{
+  max-width:420px;
+  margin:auto;
+  padding:28px 20px;
+}
+
 .card{
-background:#020617;
-border-radius:20px;
-padding:18px;
-box-shadow:0 30px 60px rgba(0,0,0,.6);
+  background:var(--card-bg);
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 50px 120px rgba(0,0,0,.65);
+  backdrop-filter:blur(12px);
+}
+
+.header{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.back{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border-soft);
+  border-radius:14px;
+  padding:6px 10px;
+  color:var(--text-muted);
+  cursor:pointer;
+}
+
+h1{
+  margin:0;
+  font-size:1.4rem;
+}
+
+small{
+  color:var(--text-muted);
+}
+
+.result{
+  margin-top:20px;
+  white-space:pre-wrap;
+  font-size:.9rem;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  margin-top:18px;
+}
+
+.actions button{
+  flex:1;
+  padding:12px;
+  border-radius:14px;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn-main{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:white;
+}
+
+.btn-pdf{
+  background:#2563eb;
+  color:white;
+}
+
+.btn-wa{
+  background:#22c55e;
+  color:white;
+}
+
+.btn-back{
+  background:transparent;
+  border:1px solid #555;
+  color:#ccc;
 }
 
 img{
-width:100%;
-border-radius:14px;
-margin-top:12px;
+  width:100%;
+  border-radius:14px;
+  margin-top:14px;
 }
-
-button{
-margin-top:12px;
-padding:12px;
-width:100%;
-border:none;
-border-radius:12px;
-font-weight:600;
-cursor:pointer;
-}
-
-.pdf{background:#2563eb;color:white;}
-.wsp{background:#22c55e;color:white;}
-.back{background:transparent;border:1px solid #555;color:#ccc;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-<button class="back" onclick="location.href='historial.html'">⬅ Volver</button>
+<div class="screen">
+  <div class="card">
 
-<div class="card">
-<pre id="text"></pre>
-<img id="img">
+    <div class="header">
+      <button class="back" onclick="location.href='historial.html'">← Historial</button>
+      <div>
+        <h1 id="titulo"></h1>
+        <small id="fecha"></small>
+      </div>
+    </div>
+
+    <div id="resultado" class="result"></div>
+    <img id="imagen" style="display:none">
+
+    <div class="actions">
+      <button id="btnVer" class="btn-main" style="display:none" onclick="verLink()">🔎 Ver</button>
+      <button class="btn-pdf" onclick="downloadPDF()">PDF</button>
+      <button class="btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
+    </div>
+
+    <div class="actions">
+      <button class="btn-back" onclick="location.href='historial.html'">Cerrar</button>
+    </div>
+
+  </div>
 </div>
-
-<button class="pdf" onclick="download()">📄 Descargar PDF</button>
-<button class="wsp" onclick="share()">📲 Compartir WhatsApp</button>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-const data=JSON.parse(localStorage.getItem("last_result")||"{}");
-text.innerText=data.resultado||"";
-if(data.captura) img.src=data.captura;
+const data = JSON.parse(localStorage.getItem("last_result"));
+if(!data){
+  location.href="historial.html";
+}
 
-function share(){
-  let msg=data.resultado||"";
-  if(data.captura) msg+="\n\n📸 "+data.captura;
+document.getElementById("titulo").innerText = data.tipo.toUpperCase();
+document.getElementById("fecha").innerText  = data.fecha;
+
+const resEl = document.getElementById("resultado");
+const imgEl = document.getElementById("imagen");
+const btnVer = document.getElementById("btnVer");
+
+let link = "";
+
+if(data.resultado && data.resultado.startsWith("http")){
+  link = data.resultado;
+  resEl.innerText = "Resultado disponible";
+  btnVer.style.display = "block";
+}else{
+  resEl.innerText = data.resultado || "Sin resultado";
+}
+
+if(data.captura){
+  imgEl.src = data.captura;
+  imgEl.style.display = "block";
+}
+
+function verLink(){
+  if(link) window.open(link,"_blank");
+}
+
+function shareWhatsApp(){
+  let msg = data.resultado || "";
+  if(link) msg += "\n" + link;
   window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
-async function download(){
+async function downloadPDF(){
   const { jsPDF } = window.jspdf;
   const pdf=new jsPDF();
-  const lines=pdf.splitTextToSize(data.resultado||"",180);
+  const lines=pdf.splitTextToSize(data.resultado || "",180);
   pdf.text(lines,10,10);
-
-  if(data.captura){
-    const imgData=await fetch(data.captura).then(r=>r.blob()).then(b=>new Promise(res=>{
-      const fr=new FileReader();
-      fr.onload=()=>res(fr.result);
-      fr.readAsDataURL(b);
-    }));
-    pdf.addImage(imgData,"PNG",10,50,180,100);
-  }
-
-  pdf.save("resultado_legends.pdf");
+  pdf.save(data.tipo+"_legends.pdf");
 }
 </script>
 
