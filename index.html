@@ -42,6 +42,7 @@ body{
   backdrop-filter: blur(12px);
 }
 
+/* TOP ACTIONS */
 .actions-top{
   display:flex;
   justify-content:flex-end;
@@ -59,11 +60,12 @@ body{
   font-size:.75rem;
 }
 
+/* USER */
 .user{
   display:flex;
   align-items:center;
   gap:12px;
-  margin-bottom:22px;
+  margin-bottom:14px;
 }
 
 .user img{
@@ -71,15 +73,38 @@ body{
   border-radius:50%;
 }
 
-.user .name{
-  font-weight:600;
-}
-
+.user .name{font-weight:600;}
 .user .role{
   font-size:.7rem;
   color:var(--text-muted);
 }
 
+/* COMPANY SELECTOR */
+.company{
+  display:flex;
+  gap:10px;
+  margin:14px 0 22px;
+}
+
+.company button{
+  flex:1;
+  padding:10px;
+  border-radius:16px;
+  border:1px solid var(--border-soft);
+  background:rgba(255,255,255,.04);
+  color:var(--text-muted);
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.company button.active{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:white;
+  border:none;
+}
+
+/* TITLE */
 .title{
   text-align:center;
   color:var(--text-muted);
@@ -88,6 +113,7 @@ body{
   margin:22px 0;
 }
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -102,64 +128,21 @@ body{
   text-align:center;
   cursor:pointer;
   transition:.25s ease;
-  backdrop-filter:blur(10px);
 }
 
-.card-btn:hover{
-  transform:translateY(-4px);
-}
-
-.card-btn:active{
-  transform:translateY(-1px) scale(.98);
-}
+.card-btn:hover{transform:translateY(-4px);}
+.card-btn:active{transform:translateY(-1px) scale(.98);}
 
 .card-btn[data-accent="blue"]{ color:#3b82f6 }
 .card-btn[data-accent="gold"]{ color:#eab308 }
 .card-btn[data-accent="green"]{ color:#22c55e }
 .card-btn[data-accent="red"]{ color:#ef4444 }
 
-.card-btn[data-accent="blue"]:hover{
-  border-color:#3b82f6;
-  box-shadow:0 35px 70px rgba(59,130,246,.35);
-}
+.icon{width:28px;height:28px;margin:0 auto 10px;}
+.icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.8;fill:none;}
+.text{font-weight:600;font-size:.9rem;}
 
-.card-btn[data-accent="gold"]:hover{
-  border-color:#eab308;
-  box-shadow:0 35px 70px rgba(234,179,8,.35);
-}
-
-.card-btn[data-accent="green"]:hover{
-  border-color:#22c55e;
-  box-shadow:0 35px 70px rgba(34,197,94,.35);
-}
-
-.card-btn[data-accent="red"]:hover{
-  border-color:#ef4444;
-  box-shadow:0 35px 70px rgba(239,68,68,.35);
-}
-
-.icon{
-  width:28px;
-  height:28px;
-  margin:0 auto 10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.icon svg{
-  width:100%;
-  height:100%;
-  stroke:currentColor;
-  stroke-width:1.8;
-  fill:none;
-}
-
-.text{
-  font-weight:600;
-  font-size:.9rem;
-}
-
+/* STATUS */
 .status{
   margin-top:22px;
   display:flex;
@@ -174,7 +157,6 @@ body{
   height:8px;
   background:#22c55e;
   border-radius:50%;
-  box-shadow:0 0 0 rgba(34,197,94,.7);
   animation:pulse 1.8s infinite;
 }
 
@@ -201,6 +183,12 @@ body{
         <div class="name" id="userName"></div>
         <div class="role" id="userRole"></div>
       </div>
+    </div>
+
+    <!-- SELECTOR EMPRESA -->
+    <div class="company">
+      <button id="btnVTR" onclick="setCompany('VTR')">VTR</button>
+      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
     </div>
 
     <div class="title">¿QUÉ QUERÉS HACER?</div>
@@ -265,6 +253,20 @@ body{
 <script>
 document.getElementById("userName").innerText = user.nombre;
 document.getElementById("userRole").innerText = user.rol;
+
+/* EMPRESA */
+function setCompany(c){
+  localStorage.setItem("legends_company", c);
+  updateCompanyUI();
+}
+
+function updateCompanyUI(){
+  const c = localStorage.getItem("legends_company") || "VTR";
+  btnVTR.classList.toggle("active", c==="VTR");
+  btnCLARO.classList.toggle("active", c==="CLARO");
+}
+
+updateCompanyUI();
 
 function logout(){
   localStorage.removeItem("legends_user");
