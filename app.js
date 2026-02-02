@@ -1,7 +1,7 @@
 // =========================
 // CONFIG
 // =========================
-const API = "https://subpreputial-hypersuggestible-leonie.ngrok-free.dev";
+const API = "https://unreproached-subangularly-cristopher.ngrok-free.dev";
 
 let lastImageUrl = "";
 let lastTextResult = "";
@@ -199,3 +199,4 @@ function runFromModal(){
   closeMode();
   btnRun.click();
 }
+
