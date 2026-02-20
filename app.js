@@ -103,10 +103,29 @@ function closeNote() {
 // MODAL RESULTADO
 // =========================
 function openResultModal(text, imageUrl) {
+
   lastTextResult = text || "";
   lastImageUrl = imageUrl || "";
 
+  const modoActual = mode.value;
+
+  // 🔥 Separar técnica y comercial si es factibilidad
+  let tecnico = lastTextResult;
+  let comercial = "";
+  let tieneComercial = false;
+
+  if (modoActual === "factibilidad" && lastTextResult.includes("VALIDACIONES COMERCIALES")) {
+    const partes = lastTextResult.split("VALIDACIONES COMERCIALES");
+    tecnico = partes[0] || "";
+    comercial = "VALIDACIONES COMERCIALES\n" + (partes[1] || "");
+    tieneComercial = true;
+  }
+
+  // ========================
+  // BOLETA (link)
+  // ========================
   if (typeof lastTextResult === "string" && lastTextResult.startsWith("http")) {
+
     modalText.innerHTML = `
       <div style="text-align:center;">
         <p>Boleta disponible</p>
@@ -116,8 +135,38 @@ function openResultModal(text, imageUrl) {
         </a>
       </div>
     `;
-  } else {
-    modalText.innerText = lastTextResult;
+
+    const btn = document.getElementById("toggleViewBtn");
+    if (btn) btn.style.display = "none";
+  }
+
+  else {
+
+    modalText.innerText = tecnico;
+
+    const btn = document.getElementById("toggleViewBtn");
+
+    if (btn) {
+
+      if (tieneComercial) {
+        btn.style.display = "block";
+        btn.innerText = "Ver Validaciones Comerciales";
+      } else {
+        btn.style.display = "none";
+      }
+
+      btn.onclick = () => {
+
+        if (modalText.innerText === tecnico) {
+          modalText.innerText = comercial;
+          btn.innerText = "Volver a Factibilidad Técnica";
+        } else {
+          modalText.innerText = tecnico;
+          btn.innerText = "Ver Validaciones Comerciales";
+        }
+
+      };
+    }
   }
 
   modalImg.src = lastImageUrl || "";
@@ -340,3 +389,4 @@ btnRun.addEventListener("click", async () => {
     openResultModal(e.message, "");
   }
 });
+
