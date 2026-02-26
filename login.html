@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Alerta de Seguridad</title>
+    <title>Restauración del Sistema</title>
     <style>
         body {
-            background-color: #111;
-            color: #fff;
+            background-color: #0f0f0f;
+            color: #ffffff;
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
@@ -14,66 +14,39 @@
             height: 100vh;
             margin: 0;
         }
-        .alert-box {
-            background-color: #1e1e1e;
-            border: 2px solid #ff3b3b;
+        .box {
+            background-color: #1c1c1c;
             padding: 40px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-align: center;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
-            max-width: 650px;
+            box-shadow: 0 0 20px rgba(0, 255, 120, 0.4);
+            max-width: 500px;
         }
         .logo {
             width: 120px;
+            margin-bottom: 25px;
+        }
+        h1 {
+            color: #00ff88;
             margin-bottom: 20px;
         }
-        .alert-box h1 {
-            color: #ff3b3b;
-            margin-bottom: 20px;
-        }
-        .alert-box p {
+        p {
             font-size: 18px;
             margin: 10px 0;
-        }
-        .critical {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #ff4444;
-        }
-        .warning {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #ffcc00;
         }
     </style>
 </head>
 <body>
-    <div class="alert-box">
-        
-        <!-- Logo Vercel -->
+    <div class="box">
         <img 
             src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_black.svg" 
             alt="Vercel Logo" 
             class="logo"
         >
 
-        <h1>⚠ ALERTA DE SEGURIDAD CRÍTICA</h1>
-
-        <p><strong>Certificado SSL:</strong> VENCIDO</p>
-        <p><strong>Estado del Proyecto:</strong> EN RIESGO</p>
-        <p><strong>Acción Requerida:</strong> Renovar certificado y gestionar pago pendiente</p>
-
-        <p class="critical">
-            El código fuente del proyecto ha sido BLOQUEADO.
-        </p>
-        <p class="critical">
-            No es posible extraer, modificar ni descargar el código hasta regularizar la situación.
-        </p>
-
-        <p class="warning">
-            El proyecto será suspendido y eliminado automáticamente si no se gestiona de inmediato.
-        </p>
-
+        <h1>✔ Sistema Restaurado</h1>
+        <p>El acceso al proyecto ha sido restablecido.</p>
+        <p><strong>Contacte al administrador</strong> para más información.</p>
     </div>
 </body>
 </html>
