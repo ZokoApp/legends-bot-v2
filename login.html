@@ -1,52 +1,209 @@
+Login.html ok
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Restauración del Sistema</title>
-    <style>
-        body {
-            background-color: #0f0f0f;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .box {
-            background-color: #1c1c1c;
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0, 255, 120, 0.4);
-            max-width: 500px;
-        }
-        .logo {
-            width: 120px;
-            margin-bottom: 25px;
-        }
-        h1 {
-            color: #00ff88;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-    </style>
-</head>
-<body>
-    <div class="box">
-        <img 
-            src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Vercel_logo_black.svg" 
-            alt="Vercel Logo" 
-            class="logo"
-        >
+  <meta charset="UTF-8">
+  <title>Legends Bot · Acceso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <h1>✔ Sistema Restaurado</h1>
-        <p>El acceso al proyecto ha sido restablecido.</p>
-        <p><strong>Contacte al administrador</strong> para más información.</p>
-    </div>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border-radius: 22px;
+      padding: 38px 30px 34px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+
+    /* LOGO IMAGEN */
+    .login-logo {
+      display: flex;
+      justify-content: center;
+      margin: 12px 0 24px;
+    }
+
+    .login-logo img {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: #020617;
+      padding: 6px;
+      box-shadow: 
+        0 10px 25px rgba(0,0,0,0.5),
+        0 0 0 4px rgba(37,99,235,0.15);
+      animation: logoIn 0.6s ease;
+    }
+
+    @keyframes logoIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.72rem;
+      color: #9ca3af;
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: none;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      color: #fff;
+    }
+
+    .error {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: #f87171;
+      text-align: center;
+      display: none;
+    }
+
+    .footer {
+      margin-top: 26px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="login-card">
+  <div class="logo">Legends Bot</div>
+  <div class="subtitle">Acceso interno autorizado</div>
+
+  <!-- LOGO -->
+  <div class="login-logo">
+    <img src="icons/icon-192.png">
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <input id="email" type="email" placeholder="usuario@legendsbot.com">
+  </div>
+
+  <div class="field">
+    <label>Contraseña</label>
+    <input id="password" type="password" placeholder="••••••••">
+  </div>
+
+  <button class="btn" onclick="login()">Ingresar</button>
+
+  <div id="error" class="error"></div>
+
+  <div class="footer">
+    ©️ Legends Bot · Sistema interno
+  </div>
+</div>
+
+<script>
+const LOGIN_API = "https://unreproached-subangularly-cristopher.ngrok-free.dev/login";
+
+async function login() {
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const errorBox = document.getElementById("error");
+
+  errorBox.style.display = "none";
+  errorBox.innerText = "";
+
+  if (!email || !password) {
+    return showError("Completá todos los campos");
+  }
+
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      return showError(data.error || "Acceso denegado");
+    }
+
+    localStorage.setItem("legends_user", JSON.stringify(data.user));
+    window.location.href = "index.html";
+
+  } catch (err) {
+    showError("Error de conexión con la API");
+  }
+}
+
+function showError(msg) {
+  const errorBox = document.getElementById("error");
+  errorBox.innerText = msg;
+  errorBox.style.display = "block";
+}
+</script>
+
 </body>
+
+
 </html>
