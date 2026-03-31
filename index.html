@@ -1,277 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legends Bot</title>
+  <meta charset="UTF-8">
+  <title>Servicio no disponible</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script>
-const user = JSON.parse(localStorage.getItem("legends_user"));
-if (!user) location.href="login.html";
-</script>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020617">
+    .message {
+      text-align: center;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
 
-<style>
-:root{
-  --bg-main: radial-gradient(circle at top,#0f172a,#020617);
-  --card-bg: rgba(255,255,255,.04);
-  --border-soft: rgba(255,255,255,.08);
-  --text-muted: #9ca3af;
-}
-
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
-  background:var(--bg-main);
-  color:white;
-}
-
-.container{
-  max-width:420px;
-  margin:auto;
-  padding:28px 20px;
-}
-
-.card{
-  background:var(--card-bg);
-  border-radius:28px;
-  padding:26px;
-  box-shadow:0 50px 120px rgba(0,0,0,.65);
-  backdrop-filter: blur(12px);
-}
-
-/* TOP ACTIONS */
-.actions-top{
-  display:flex;
-  justify-content:flex-end;
-  gap:10px;
-  margin-bottom:14px;
-}
-
-.actions-top button{
-  background:transparent;
-  border:1px solid var(--border-soft);
-  color:var(--text-muted);
-  padding:6px 14px;
-  border-radius:14px;
-  cursor:pointer;
-  font-size:.75rem;
-}
-
-/* USER */
-.user{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.user img{
-  width:46px;
-  border-radius:50%;
-}
-
-.user .name{font-weight:600;}
-.user .role{
-  font-size:.7rem;
-  color:var(--text-muted);
-}
-
-/* COMPANY SELECTOR */
-.company{
-  display:flex;
-  gap:10px;
-  margin:14px 0 22px;
-}
-
-.company button{
-  flex:1;
-  padding:10px;
-  border-radius:16px;
-  border:1px solid var(--border-soft);
-  background:rgba(255,255,255,.04);
-  color:var(--text-muted);
-  font-weight:600;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.company button.active{
-  background:linear-gradient(135deg,#3b82f6,#2563eb);
-  color:white;
-  border:none;
-}
-
-/* TITLE */
-.title{
-  text-align:center;
-  color:var(--text-muted);
-  font-size:.7rem;
-  letter-spacing:2.5px;
-  margin:22px 0;
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.card-btn{
-  background:var(--card-bg);
-  border:1px solid var(--border-soft);
-  border-radius:22px;
-  padding:26px 10px;
-  text-align:center;
-  cursor:pointer;
-  transition:.25s ease;
-}
-
-.card-btn:hover{transform:translateY(-4px);}
-.card-btn:active{transform:translateY(-1px) scale(.98);}
-
-.card-btn[data-accent="blue"]{ color:#3b82f6 }
-.card-btn[data-accent="gold"]{ color:#eab308 }
-.card-btn[data-accent="green"]{ color:#22c55e }
-.card-btn[data-accent="red"]{ color:#ef4444 }
-
-.icon{width:28px;height:28px;margin:0 auto 10px;}
-.icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.8;fill:none;}
-.text{font-weight:600;font-size:.9rem;}
-
-/* STATUS */
-.status{
-  margin-top:22px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-  font-size:.7rem;
-  color:var(--text-muted);
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  background:#22c55e;
-  border-radius:50%;
-  animation:pulse 1.8s infinite;
-}
-
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}
-  70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
-}
-</style>
+    p {
+      margin: 0;
+      color: #333;
+      font-size: 16px;
+    }
+  </style>
 </head>
 
 <body>
-<div class="container">
-  <div class="card">
-
-    <div class="actions-top">
-      <button onclick="location.href='historial.html'">Historial</button>
-      <button onclick="logout()">Salir</button>
-    </div>
-
-    <div class="user">
-      <img src="icons/icon-192.png">
-      <div>
-        <div class="name" id="userName"></div>
-        <div class="role" id="userRole"></div>
-      </div>
-    </div>
-
-    <!-- SELECTOR EMPRESA -->
-    <div class="company">
-      <button id="btnVTR" onclick="setCompany('VTR')">VTR</button>
-      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
-    </div>
-
-    <div class="title">¿QUÉ QUERÉS HACER?</div>
-
-    <div class="grid">
-
-      <div class="card-btn" data-accent="blue" onclick="location.href='boleta.html'">
-        <div class="icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="4" y="3" width="16" height="18" rx="2"/>
-            <line x1="8" y1="7" x2="16" y2="7"/>
-            <line x1="8" y1="11" x2="16" y2="11"/>
-            <line x1="8" y1="15" x2="13" y2="15"/>
-          </svg>
-        </div>
-        <div class="text">Boleta</div>
-      </div>
-
-      <div class="card-btn" data-accent="gold" onclick="location.href='estado.html'">
-        <div class="icon">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="9"/>
-            <path d="M8 12h8"/>
-            <path d="M12 7v10"/>
-          </svg>
-        </div>
-        <div class="text">Estado de Venta</div>
-      </div>
-
-      <div class="card-btn" data-accent="green" onclick="location.href='factibilidad.html'">
-        <div class="icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M10 2v6l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2"/>
-            <line x1="8" y1="14" x2="16" y2="14"/>
-          </svg>
-        </div>
-        <div class="text">Factibilidad</div>
-      </div>
-
-      <div class="card-btn" data-accent="red" onclick="location.href='agenda.html'">
-        <div class="icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="5" width="18" height="16" rx="2"/>
-            <line x1="16" y1="3" x2="16" y2="7"/>
-            <line x1="8" y1="3" x2="8" y2="7"/>
-            <line x1="3" y1="11" x2="21" y2="11"/>
-          </svg>
-        </div>
-        <div class="text">Agenda</div>
-      </div>
-
-    </div>
-
-    <div class="status">
-      <div class="dot"></div>
-      Conectado a Legends Bot
-    </div>
-
+  <div class="message">
+    <p>
+      Error en un sistema externo. El servicio no se encuentra disponible temporalmente.
+    </p>
   </div>
-</div>
-
-<script>
-document.getElementById("userName").innerText = user.nombre;
-document.getElementById("userRole").innerText = user.rol;
-
-/* EMPRESA */
-function setCompany(c){
-  localStorage.setItem("legends_company", c);
-  updateCompanyUI();
-}
-
-function updateCompanyUI(){
-  const c = localStorage.getItem("legends_company") || "VTR";
-  btnVTR.classList.toggle("active", c==="VTR");
-  btnCLARO.classList.toggle("active", c==="CLARO");
-}
-
-updateCompanyUI();
-
-function logout(){
-  localStorage.removeItem("legends_user");
-  location.href="login.html";
-}
-</script>
 </body>
 </html>
