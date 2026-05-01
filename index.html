@@ -1,43 +1,475 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Servicio no disponible</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legends Bot – Producción</title>
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
+<script>
+const user = JSON.parse(localStorage.getItem("legends_user"));
+if (!user) window.location.href = "login.html";
+</script>
 
-    .message {
-      text-align: center;
-      background: white;
-      padding: 30px 40px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      max-width: 400px;
-    }
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1220">
 
-    p {
-      margin: 0;
-      color: #333;
-      font-size: 16px;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;
+font-family:system-ui;
+background:radial-gradient(circle at top,#0f172a,#020617);
+color:#e5e7eb;
+}
+
+/* SPLASH */
+#splash{
+position:fixed;
+inset:0;
+background:radial-gradient(circle at top,#0f172a,#020617);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:99999;
+animation:fadeOut 1.2s ease forwards;
+animation-delay:1.2s;
+}
+
+#splash img{
+width:110px;
+animation:logoPulse 1.2s ease infinite;
+}
+
+@keyframes logoPulse{
+0%{transform:scale(0.9)}
+50%{transform:scale(1)}
+100%{transform:scale(0.9)}
+}
+
+@keyframes fadeOut{
+to{opacity:0;pointer-events:none}
+}
+
+.mode-buttons{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+}
+
+.mode-btn{
+background:linear-gradient(135deg,#1e293b,#020617);
+border:1px solid #334155;
+border-radius:14px;
+padding:14px;
+color:white;
+font-weight:600;
+cursor:pointer;
+box-shadow:0 0 20px rgba(56,189,248,.15);
+}
+
+.mode-btn:hover{
+background:linear-gradient(135deg,#2563eb,#020617);
+}
+
+.container{max-width:420px;margin:0 auto;padding:28px 20px 40px}
+.card{background:rgba(255,255,255,0.04);border-radius:20px;padding:26px 22px 28px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+
+.user-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.user-info{display:flex;align-items:center;gap:12px}
+.user-info img{width:46px;height:46px;border-radius:50%}
+.user-name{font-size:.8rem;color:#9ca3af}
+.user-name strong{display:block;font-size:.95rem;color:#fff}
+
+.verified{
+width:16px;
+height:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.btn-logout{
+padding:6px 14px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,.2);
+background:transparent;
+color:#9ca3af;
+font-size:.75rem;
+cursor:pointer;
+flex:none;
+}
+
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.75rem;color:#9ca3af;margin-bottom:6px}
+.field input,.field select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+background:#020617;
+color:#e5e7eb;
+font-size:.9rem;
+}
+
+.actions{display:flex;gap:12px;margin-top:20px}
+button{flex:1;padding:14px;border-radius:16px;border:none;cursor:pointer;font-weight:600;font-size:.95rem}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff}
+.btn-secondary{background:transparent;color:#9ca3af;border:1px solid rgba(255,255,255,.2)}
+
+.status{margin-top:16px;font-size:.75rem;display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e}
+
+/* MODALES */
+.modal-overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:9999;
+}
+
+.modal-card{
+width:95%;
+max-width:520px;
+background:#020617;
+border-radius:20px;
+padding:18px;
+display:flex;
+flex-direction:column;
+max-height:92vh;
+overflow:hidden;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:.9rem;
+margin-bottom:10px;
+}
+
+.modal-close{
+background:transparent;
+border:none;
+color:#aaa;
+font-size:1rem;
+cursor:pointer;
+}
+
+.modal-body{
+flex:1;
+overflow-y:auto;
+padding-right:6px;
+scrollbar-width:thin;
+}
+
+.modal-body pre{
+background:#0b1220;
+padding:18px;
+border-radius:14px;
+font-size:.85rem;
+line-height:1.6;
+white-space:pre-wrap;
+word-break:break-word;
+overflow-x:auto;
+color:#e5e7eb;
+border:1px solid rgba(255,255,255,.05);
+}
+
+.modal-body img{
+width:100%;
+border-radius:14px;
+margin-top:14px;
+border:1px solid rgba(255,255,255,.05);
+}
+
+.modal-actions{
+display:flex;
+gap:8px;
+margin-top:12px;
+}
+
+.btn-modal{
+flex:1;
+padding:10px;
+border-radius:12px;
+border:none;
+cursor:pointer;
+font-size:.75rem;
+font-weight:600;
+}
+
+.btn-pdf{background:#2563eb;color:white}
+.btn-wsp{background:#22c55e;color:white}
+.btn-close{background:transparent;border:1px solid #555;color:#ccc}
+
+/* MODO TRABAJO */
+#workMode{
+position:fixed;
+inset:0;
+background:radial-gradient(circle at top,#0f172a,#020617);
+display:none;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:99998;
+text-align:center;
+}
+
+#workMode img{
+width:90px;
+margin-bottom:20px;
+animation:workPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes workPulse{
+0%{transform:scale(0.9);opacity:0.6}
+50%{transform:scale(1);opacity:1}
+100%{transform:scale(0.9);opacity:0.6}
+}
+
+#workText{
+font-size:0.9rem;
+color:#9ca3af;
+margin-top:12px;
+min-height:20px;
+}
+</style>
 </head>
 
 <body>
-  <div class="message">
-    <p>
-      Error en un sistema externo. El servicio no se encuentra disponible temporalmente.
-    </p>
-  </div>
+
+<div id="splash">
+<img src="icons/icon-192.png">
+</div>
+
+<div id="workMode">
+<img src="icons/icon-192.png">
+<strong style="font-size:1rem">🤖 Legends Bot trabajando</strong>
+<div id="workText">Conectando con sistemas corporativos…</div>
+</div>
+
+<div class="container">
+<div class="card">
+
+<div class="user-header">
+<div class="user-info">
+<img src="icons/icon-192.png">
+<div class="user-name">
+<div style="display:flex;align-items:center;gap:6px">
+<strong id="userName"></strong>
+<span id="verifiedBadge" class="verified" style="display:none">
+<svg viewBox="0 0 24 24" width="16" height="16">
+<circle cx="12" cy="12" r="10" fill="#1d9bf0"/>
+<path d="M7 12.5l3 3 7-7" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span>
+</div>
+<span id="userRole"></span>
+</div>
+</div>
+<button class="btn-logout" onclick="openHistory()">Historial</button>
+<button class="btn-logout" onclick="logout()">Salir</button>
+</div>
+
+<div class="field">
+<label>COMPAÑÍA</label>
+<select id="company">
+<option value="VTR">VTR</option>
+<option value="CLARO">CLARO</option>
+</select>
+</div>
+
+<div class="field">
+<label>OPERACIÓN</label>
+<div class="mode-buttons">
+<button class="mode-btn" onclick="openMode('factibilidad')">🧪 Factibilidad</button>
+<button class="mode-btn" onclick="openMode('validacion')">💰 Estado de Venta</button>
+<button class="mode-btn" onclick="openMode('agenda')">📅 Agenda</button>
+<button class="mode-btn" onclick="openMode('boleta')">🧾 Boleta</button>
+</div>
+</div>
+
+<input type="hidden" id="mode">
+
+<div class="field"><label>DIRECCIÓN</label><input id="address"></div>
+<div class="field"><label>COMUNA</label><input id="comuna"></div>
+<div class="field"><label>RUT / CUENTA (Boleta)</label><input id="rut"></div>
+
+<div class="actions">
+<button id="btnRun" class="btn-primary">Ejecutar</button>
+<button id="btnClear" class="btn-secondary">Limpiar</button>
+</div>
+
+<div class="status">
+<div class="dot"></div>
+<span id="statusText">Conectado a Legends Bot</span>
+</div>
+
+</div>
+</div>
+
+<script src="app.js"></script>
+
+<script>
+const workMessages=[
+"Conectando con sistemas corporativos…",
+"Autenticando credenciales…",
+"Consultando base de datos Andes…",
+"Procesando información comercial…",
+"Validando resultados…",
+"Generando reporte final…"
+];
+
+let workInterval=null;
+
+function showWorkMode(){
+document.getElementById("workMode").style.display="flex";
+let i=0;
+workInterval=setInterval(()=>{
+document.getElementById("workText").innerText=workMessages[i%workMessages.length];
+i++;
+},2000);
+}
+
+function hideWorkMode(){
+document.getElementById("workMode").style.display="none";
+clearInterval(workInterval);
+}
+
+document.getElementById("userName").innerText=user.nombre;
+document.getElementById("userRole").innerText=user.rol;
+
+if(user.rol==="Admin"){
+document.getElementById("verifiedBadge").style.display="flex";
+}
+
+function logout(){
+localStorage.removeItem("legends_user");
+window.location.href="login.html";
+}
+</script>
+
+<div id="resultModal" class="modal-overlay">
+<div class="modal-card">
+<div class="modal-header">
+<strong>Resultado</strong>
+<button class="modal-close" onclick="closeResultModal()">✖</button>
+</div>
+
+<div class="modal-body">
+
+<pre id="modalText"></pre>
+
+<button id="toggleViewBtn"
+style="margin-top:12px;padding:10px;border-radius:12px;border:none;
+background:#1f6feb;color:white;cursor:pointer;display:none;font-weight:600;">
+Ver Validaciones Comerciales
+</button>
+
+<img id="modalImg"/>
+
+</div>
+
+<div class="modal-actions">
+<button class="btn-modal btn-pdf" onclick="downloadPDF()">📄 PDF</button>
+<button class="btn-modal btn-wsp" onclick="shareWhatsApp()">📲 WhatsApp</button>
+<button class="btn-modal btn-close" onclick="closeResultModal()">Cerrar</button>
+</div>
+
+</div>
+</div>
+
+<div id="historyModal" class="modal-overlay">
+<div class="modal-card">
+<div class="modal-header">
+<strong>Historial</strong>
+<button class="modal-close" onclick="closeHistory()">✖</button>
+</div>
+<div class="modal-body" id="historyList"></div>
+<div class="modal-actions">
+<button class="btn-modal btn-close" onclick="closeHistory()">Cerrar</button>
+</div>
+</div>
+</div>
+
+<div id="noteModal" class="modal-overlay">
+<div class="modal-card">
+<div class="modal-header">
+<strong>Nota</strong>
+<button class="modal-close" onclick="closeNote()">✖</button>
+</div>
+<div class="modal-body">
+<textarea id="noteText" style="width:100%;height:120px;background:#020617;color:white;border-radius:10px;padding:10px"></textarea>
+</div>
+<div class="modal-actions">
+<button class="btn-modal btn-pdf" onclick="saveNote()">Guardar</button>
+<button class="btn-modal btn-close" onclick="closeNote()">Cancelar</button>
+</div>
+</div>
+</div>
+
+<div id="modeModal" class="modal-overlay">
+<div class="modal-card">
+<div class="modal-header">
+<strong id="modeTitle"></strong>
+<button class="modal-close" onclick="closeMode()">✖</button>
+</div>
+<div class="modal-body" id="modeBody"></div>
+<div class="modal-actions">
+<button class="btn-modal btn-pdf" onclick="runFromModal()">Ejecutar</button>
+<button class="btn-modal btn-close" onclick="closeMode()">Cancelar</button>
+</div>
+</div>
+</div>
+
+<script>
+let resultadoTecnico = "";
+let resultadoComercial = "";
+let mostrandoComercial = false;
+
+function prepararResultado(texto) {
+
+  const modoActual = document.getElementById("mode").value;
+
+  const partes = texto.split("VALIDACIONES COMERCIALES");
+
+  resultadoTecnico = partes[0] || "";
+  resultadoComercial = partes[1] || "";
+
+  document.getElementById("modalText").innerText = resultadoTecnico;
+
+  const btn = document.getElementById("toggleViewBtn");
+
+  if (
+    modoActual === "factibilidad" &&
+    resultadoComercial &&
+    resultadoComercial.trim().length > 0
+  ) {
+    btn.style.display = "block";
+    btn.innerText = "Ver Validaciones Comerciales";
+    mostrandoComercial = false;
+  } else {
+    btn.style.display = "none";
+  }
+}
+
+document.getElementById("toggleViewBtn").addEventListener("click", () => {
+
+  if (!mostrandoComercial) {
+    document.getElementById("modalText").innerText = resultadoComercial;
+    document.getElementById("toggleViewBtn").innerText = "Volver a Factibilidad Técnica";
+  } else {
+    document.getElementById("modalText").innerText = resultadoTecnico;
+    document.getElementById("toggleViewBtn").innerText = "Ver Validaciones Comerciales";
+  }
+
+  mostrandoComercial = !mostrandoComercial;
+});
+</script>
+
 </body>
 </html>
