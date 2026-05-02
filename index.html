@@ -1,475 +1,277 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Legends Bot – Producción</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legends Bot</title>
 
 <script>
 const user = JSON.parse(localStorage.getItem("legends_user"));
-if (!user) window.location.href = "login.html";
+if (!user) location.href="login.html";
 </script>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b1220">
+<meta name="theme-color" content="#020617">
 
 <style>
-*{box-sizing:border-box}
+:root{
+  --bg-main: radial-gradient(circle at top,#0f172a,#020617);
+  --card-bg: rgba(255,255,255,.04);
+  --border-soft: rgba(255,255,255,.08);
+  --text-muted: #9ca3af;
+}
+
 body{
-margin:0;
-font-family:system-ui;
-background:radial-gradient(circle at top,#0f172a,#020617);
-color:#e5e7eb;
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background:var(--bg-main);
+  color:white;
 }
 
-/* SPLASH */
-#splash{
-position:fixed;
-inset:0;
-background:radial-gradient(circle at top,#0f172a,#020617);
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:99999;
-animation:fadeOut 1.2s ease forwards;
-animation-delay:1.2s;
+.container{
+  max-width:420px;
+  margin:auto;
+  padding:28px 20px;
 }
 
-#splash img{
-width:110px;
-animation:logoPulse 1.2s ease infinite;
+.card{
+  background:var(--card-bg);
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 50px 120px rgba(0,0,0,.65);
+  backdrop-filter: blur(12px);
 }
 
-@keyframes logoPulse{
-0%{transform:scale(0.9)}
-50%{transform:scale(1)}
-100%{transform:scale(0.9)}
+/* TOP ACTIONS */
+.actions-top{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-bottom:14px;
 }
 
-@keyframes fadeOut{
-to{opacity:0;pointer-events:none}
+.actions-top button{
+  background:transparent;
+  border:1px solid var(--border-soft);
+  color:var(--text-muted);
+  padding:6px 14px;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:.75rem;
 }
 
-.mode-buttons{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+/* USER */
+.user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
 }
 
-.mode-btn{
-background:linear-gradient(135deg,#1e293b,#020617);
-border:1px solid #334155;
-border-radius:14px;
-padding:14px;
-color:white;
-font-weight:600;
-cursor:pointer;
-box-shadow:0 0 20px rgba(56,189,248,.15);
+.user img{
+  width:46px;
+  border-radius:50%;
 }
 
-.mode-btn:hover{
-background:linear-gradient(135deg,#2563eb,#020617);
+.user .name{font-weight:600;}
+.user .role{
+  font-size:.7rem;
+  color:var(--text-muted);
 }
 
-.container{max-width:420px;margin:0 auto;padding:28px 20px 40px}
-.card{background:rgba(255,255,255,0.04);border-radius:20px;padding:26px 22px 28px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
-
-.user-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
-.user-info{display:flex;align-items:center;gap:12px}
-.user-info img{width:46px;height:46px;border-radius:50%}
-.user-name{font-size:.8rem;color:#9ca3af}
-.user-name strong{display:block;font-size:.95rem;color:#fff}
-
-.verified{
-width:16px;
-height:16px;
-display:flex;
-align-items:center;
-justify-content:center;
+/* COMPANY SELECTOR */
+.company{
+  display:flex;
+  gap:10px;
+  margin:14px 0 22px;
 }
 
-.btn-logout{
-padding:6px 14px;
-border-radius:12px;
-border:1px solid rgba(255,255,255,.2);
-background:transparent;
-color:#9ca3af;
-font-size:.75rem;
-cursor:pointer;
-flex:none;
+.company button{
+  flex:1;
+  padding:10px;
+  border-radius:16px;
+  border:1px solid var(--border-soft);
+  background:rgba(255,255,255,.04);
+  color:var(--text-muted);
+  font-weight:600;
+  cursor:pointer;
+  transition:.2s;
 }
 
-.field{margin-bottom:18px}
-.field label{display:block;font-size:.75rem;color:#9ca3af;margin-bottom:6px}
-.field input,.field select{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:none;
-background:#020617;
-color:#e5e7eb;
-font-size:.9rem;
+.company button.active{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  color:white;
+  border:none;
 }
 
-.actions{display:flex;gap:12px;margin-top:20px}
-button{flex:1;padding:14px;border-radius:16px;border:none;cursor:pointer;font-weight:600;font-size:.95rem}
-.btn-primary{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff}
-.btn-secondary{background:transparent;color:#9ca3af;border:1px solid rgba(255,255,255,.2)}
-
-.status{margin-top:16px;font-size:.75rem;display:flex;gap:6px;align-items:center}
-.dot{width:8px;height:8px;border-radius:50%;background:#22c55e}
-
-/* MODALES */
-.modal-overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.85);
-display:none;
-justify-content:center;
-align-items:center;
-z-index:9999;
+/* TITLE */
+.title{
+  text-align:center;
+  color:var(--text-muted);
+  font-size:.7rem;
+  letter-spacing:2.5px;
+  margin:22px 0;
 }
 
-.modal-card{
-width:95%;
-max-width:520px;
-background:#020617;
-border-radius:20px;
-padding:18px;
-display:flex;
-flex-direction:column;
-max-height:92vh;
-overflow:hidden;
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
 }
 
-.modal-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-font-size:.9rem;
-margin-bottom:10px;
+.card-btn{
+  background:var(--card-bg);
+  border:1px solid var(--border-soft);
+  border-radius:22px;
+  padding:26px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:.25s ease;
 }
 
-.modal-close{
-background:transparent;
-border:none;
-color:#aaa;
-font-size:1rem;
-cursor:pointer;
+.card-btn:hover{transform:translateY(-4px);}
+.card-btn:active{transform:translateY(-1px) scale(.98);}
+
+.card-btn[data-accent="blue"]{ color:#3b82f6 }
+.card-btn[data-accent="gold"]{ color:#eab308 }
+.card-btn[data-accent="green"]{ color:#22c55e }
+.card-btn[data-accent="red"]{ color:#ef4444 }
+
+.icon{width:28px;height:28px;margin:0 auto 10px;}
+.icon svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.8;fill:none;}
+.text{font-weight:600;font-size:.9rem;}
+
+/* STATUS */
+.status{
+  margin-top:22px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-size:.7rem;
+  color:var(--text-muted);
 }
 
-.modal-body{
-flex:1;
-overflow-y:auto;
-padding-right:6px;
-scrollbar-width:thin;
+.dot{
+  width:8px;
+  height:8px;
+  background:#22c55e;
+  border-radius:50%;
+  animation:pulse 1.8s infinite;
 }
 
-.modal-body pre{
-background:#0b1220;
-padding:18px;
-border-radius:14px;
-font-size:.85rem;
-line-height:1.6;
-white-space:pre-wrap;
-word-break:break-word;
-overflow-x:auto;
-color:#e5e7eb;
-border:1px solid rgba(255,255,255,.05);
-}
-
-.modal-body img{
-width:100%;
-border-radius:14px;
-margin-top:14px;
-border:1px solid rgba(255,255,255,.05);
-}
-
-.modal-actions{
-display:flex;
-gap:8px;
-margin-top:12px;
-}
-
-.btn-modal{
-flex:1;
-padding:10px;
-border-radius:12px;
-border:none;
-cursor:pointer;
-font-size:.75rem;
-font-weight:600;
-}
-
-.btn-pdf{background:#2563eb;color:white}
-.btn-wsp{background:#22c55e;color:white}
-.btn-close{background:transparent;border:1px solid #555;color:#ccc}
-
-/* MODO TRABAJO */
-#workMode{
-position:fixed;
-inset:0;
-background:radial-gradient(circle at top,#0f172a,#020617);
-display:none;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:99998;
-text-align:center;
-}
-
-#workMode img{
-width:90px;
-margin-bottom:20px;
-animation:workPulse 1.4s ease-in-out infinite;
-}
-
-@keyframes workPulse{
-0%{transform:scale(0.9);opacity:0.6}
-50%{transform:scale(1);opacity:1}
-100%{transform:scale(0.9);opacity:0.6}
-}
-
-#workText{
-font-size:0.9rem;
-color:#9ca3af;
-margin-top:12px;
-min-height:20px;
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}
+  70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
 }
 </style>
 </head>
 
 <body>
-
-<div id="splash">
-<img src="icons/icon-192.png">
-</div>
-
-<div id="workMode">
-<img src="icons/icon-192.png">
-<strong style="font-size:1rem">🤖 Legends Bot trabajando</strong>
-<div id="workText">Conectando con sistemas corporativos…</div>
-</div>
-
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<div class="user-header">
-<div class="user-info">
-<img src="icons/icon-192.png">
-<div class="user-name">
-<div style="display:flex;align-items:center;gap:6px">
-<strong id="userName"></strong>
-<span id="verifiedBadge" class="verified" style="display:none">
-<svg viewBox="0 0 24 24" width="16" height="16">
-<circle cx="12" cy="12" r="10" fill="#1d9bf0"/>
-<path d="M7 12.5l3 3 7-7" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</span>
-</div>
-<span id="userRole"></span>
-</div>
-</div>
-<button class="btn-logout" onclick="openHistory()">Historial</button>
-<button class="btn-logout" onclick="logout()">Salir</button>
-</div>
+    <div class="actions-top">
+      <button onclick="location.href='historial.html'">Historial</button>
+      <button onclick="logout()">Salir</button>
+    </div>
 
-<div class="field">
-<label>COMPAÑÍA</label>
-<select id="company">
-<option value="VTR">VTR</option>
-<option value="CLARO">CLARO</option>
-</select>
-</div>
+    <div class="user">
+      <img src="icons/icon-192.png">
+      <div>
+        <div class="name" id="userName"></div>
+        <div class="role" id="userRole"></div>
+      </div>
+    </div>
 
-<div class="field">
-<label>OPERACIÓN</label>
-<div class="mode-buttons">
-<button class="mode-btn" onclick="openMode('factibilidad')">🧪 Factibilidad</button>
-<button class="mode-btn" onclick="openMode('validacion')">💰 Estado de Venta</button>
-<button class="mode-btn" onclick="openMode('agenda')">📅 Agenda</button>
-<button class="mode-btn" onclick="openMode('boleta')">🧾 Boleta</button>
-</div>
-</div>
+    <!-- SELECTOR EMPRESA -->
+    <div class="company">
+      <button id="btnVTR" onclick="setCompany('VTR')">VTR</button>
+      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
+    </div>
 
-<input type="hidden" id="mode">
+    <div class="title">¿QUÉ QUERÉS HACER?</div>
 
-<div class="field"><label>DIRECCIÓN</label><input id="address"></div>
-<div class="field"><label>COMUNA</label><input id="comuna"></div>
-<div class="field"><label>RUT / CUENTA (Boleta)</label><input id="rut"></div>
+    <div class="grid">
 
-<div class="actions">
-<button id="btnRun" class="btn-primary">Ejecutar</button>
-<button id="btnClear" class="btn-secondary">Limpiar</button>
+      <div class="card-btn" data-accent="blue" onclick="location.href='boleta.html'">
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="3" width="16" height="18" rx="2"/>
+            <line x1="8" y1="7" x2="16" y2="7"/>
+            <line x1="8" y1="11" x2="16" y2="11"/>
+            <line x1="8" y1="15" x2="13" y2="15"/>
+          </svg>
+        </div>
+        <div class="text">Boleta</div>
+      </div>
+
+      <div class="card-btn" data-accent="gold" onclick="location.href='estado.html'">
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M8 12h8"/>
+            <path d="M12 7v10"/>
+          </svg>
+        </div>
+        <div class="text">Estado de Venta</div>
+      </div>
+
+      <div class="card-btn" data-accent="green" onclick="location.href='factibilidad.html'">
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M10 2v6l-5 9a4 4 0 0 0 3.5 6h7a4 4 0 0 0 3.5-6l-5-9V2"/>
+            <line x1="8" y1="14" x2="16" y2="14"/>
+          </svg>
+        </div>
+        <div class="text">Factibilidad</div>
+      </div>
+
+      <div class="card-btn" data-accent="red" onclick="location.href='agenda.html'">
+        <div class="icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="5" width="18" height="16" rx="2"/>
+            <line x1="16" y1="3" x2="16" y2="7"/>
+            <line x1="8" y1="3" x2="8" y2="7"/>
+            <line x1="3" y1="11" x2="21" y2="11"/>
+          </svg>
+        </div>
+        <div class="text">Agenda</div>
+      </div>
+
+    </div>
+
+    <div class="status">
+      <div class="dot"></div>
+      Conectado a Legends Bot
+    </div>
+
+  </div>
 </div>
-
-<div class="status">
-<div class="dot"></div>
-<span id="statusText">Conectado a Legends Bot</span>
-</div>
-
-</div>
-</div>
-
-<script src="app.js"></script>
 
 <script>
-const workMessages=[
-"Conectando con sistemas corporativos…",
-"Autenticando credenciales…",
-"Consultando base de datos Andes…",
-"Procesando información comercial…",
-"Validando resultados…",
-"Generando reporte final…"
-];
+document.getElementById("userName").innerText = user.nombre;
+document.getElementById("userRole").innerText = user.rol;
 
-let workInterval=null;
-
-function showWorkMode(){
-document.getElementById("workMode").style.display="flex";
-let i=0;
-workInterval=setInterval(()=>{
-document.getElementById("workText").innerText=workMessages[i%workMessages.length];
-i++;
-},2000);
+/* EMPRESA */
+function setCompany(c){
+  localStorage.setItem("legends_company", c);
+  updateCompanyUI();
 }
 
-function hideWorkMode(){
-document.getElementById("workMode").style.display="none";
-clearInterval(workInterval);
+function updateCompanyUI(){
+  const c = localStorage.getItem("legends_company") || "VTR";
+  btnVTR.classList.toggle("active", c==="VTR");
+  btnCLARO.classList.toggle("active", c==="CLARO");
 }
 
-document.getElementById("userName").innerText=user.nombre;
-document.getElementById("userRole").innerText=user.rol;
-
-if(user.rol==="Admin"){
-document.getElementById("verifiedBadge").style.display="flex";
-}
+updateCompanyUI();
 
 function logout(){
-localStorage.removeItem("legends_user");
-window.location.href="login.html";
+  localStorage.removeItem("legends_user");
+  location.href="login.html";
 }
 </script>
-
-<div id="resultModal" class="modal-overlay">
-<div class="modal-card">
-<div class="modal-header">
-<strong>Resultado</strong>
-<button class="modal-close" onclick="closeResultModal()">✖</button>
-</div>
-
-<div class="modal-body">
-
-<pre id="modalText"></pre>
-
-<button id="toggleViewBtn"
-style="margin-top:12px;padding:10px;border-radius:12px;border:none;
-background:#1f6feb;color:white;cursor:pointer;display:none;font-weight:600;">
-Ver Validaciones Comerciales
-</button>
-
-<img id="modalImg"/>
-
-</div>
-
-<div class="modal-actions">
-<button class="btn-modal btn-pdf" onclick="downloadPDF()">📄 PDF</button>
-<button class="btn-modal btn-wsp" onclick="shareWhatsApp()">📲 WhatsApp</button>
-<button class="btn-modal btn-close" onclick="closeResultModal()">Cerrar</button>
-</div>
-
-</div>
-</div>
-
-<div id="historyModal" class="modal-overlay">
-<div class="modal-card">
-<div class="modal-header">
-<strong>Historial</strong>
-<button class="modal-close" onclick="closeHistory()">✖</button>
-</div>
-<div class="modal-body" id="historyList"></div>
-<div class="modal-actions">
-<button class="btn-modal btn-close" onclick="closeHistory()">Cerrar</button>
-</div>
-</div>
-</div>
-
-<div id="noteModal" class="modal-overlay">
-<div class="modal-card">
-<div class="modal-header">
-<strong>Nota</strong>
-<button class="modal-close" onclick="closeNote()">✖</button>
-</div>
-<div class="modal-body">
-<textarea id="noteText" style="width:100%;height:120px;background:#020617;color:white;border-radius:10px;padding:10px"></textarea>
-</div>
-<div class="modal-actions">
-<button class="btn-modal btn-pdf" onclick="saveNote()">Guardar</button>
-<button class="btn-modal btn-close" onclick="closeNote()">Cancelar</button>
-</div>
-</div>
-</div>
-
-<div id="modeModal" class="modal-overlay">
-<div class="modal-card">
-<div class="modal-header">
-<strong id="modeTitle"></strong>
-<button class="modal-close" onclick="closeMode()">✖</button>
-</div>
-<div class="modal-body" id="modeBody"></div>
-<div class="modal-actions">
-<button class="btn-modal btn-pdf" onclick="runFromModal()">Ejecutar</button>
-<button class="btn-modal btn-close" onclick="closeMode()">Cancelar</button>
-</div>
-</div>
-</div>
-
-<script>
-let resultadoTecnico = "";
-let resultadoComercial = "";
-let mostrandoComercial = false;
-
-function prepararResultado(texto) {
-
-  const modoActual = document.getElementById("mode").value;
-
-  const partes = texto.split("VALIDACIONES COMERCIALES");
-
-  resultadoTecnico = partes[0] || "";
-  resultadoComercial = partes[1] || "";
-
-  document.getElementById("modalText").innerText = resultadoTecnico;
-
-  const btn = document.getElementById("toggleViewBtn");
-
-  if (
-    modoActual === "factibilidad" &&
-    resultadoComercial &&
-    resultadoComercial.trim().length > 0
-  ) {
-    btn.style.display = "block";
-    btn.innerText = "Ver Validaciones Comerciales";
-    mostrandoComercial = false;
-  } else {
-    btn.style.display = "none";
-  }
-}
-
-document.getElementById("toggleViewBtn").addEventListener("click", () => {
-
-  if (!mostrandoComercial) {
-    document.getElementById("modalText").innerText = resultadoComercial;
-    document.getElementById("toggleViewBtn").innerText = "Volver a Factibilidad Técnica";
-  } else {
-    document.getElementById("modalText").innerText = resultadoTecnico;
-    document.getElementById("toggleViewBtn").innerText = "Ver Validaciones Comerciales";
-  }
-
-  mostrandoComercial = !mostrandoComercial;
-});
-</script>
-
 </body>
 </html>
