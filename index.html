@@ -5,72 +5,300 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Legends Bot</title>
 
+<script>
+const user = JSON.parse(localStorage.getItem("legends_user"));
+if (!user) location.href="login.html";
+</script>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
+
 <style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#020617;
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-    color:white;
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-.box{
-    width:90%;
-    max-width:420px;
-    background:rgba(255,255,255,.05);
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:24px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.5);
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
 }
 
-.icon{
-    font-size:52px;
-    margin-bottom:15px;
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
 }
 
-h2{
-    margin:0 0 12px;
+/* TOP ACTIONS */
+.actions-top {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 18px;
 }
 
-p{
-    color:#cbd5e1;
-    line-height:1.5;
+.btn-top {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
-button{
-    margin-top:20px;
-    padding:12px 24px;
-    border:none;
-    border-radius:12px;
-    background:#2563eb;
-    color:white;
-    cursor:pointer;
-    font-size:15px;
+.btn-top:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: #e2e8f0;
+}
+
+.btn-top.danger {
+  border-color: rgba(239,68,68,0.25);
+  color: #f87171;
+}
+
+.btn-top.danger:hover {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.5);
+}
+
+/* USER */
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.user img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(59,130,246,0.35);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+}
+
+.user .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
+
+.user .role {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+/* COMPANY SELECTOR */
+.company-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
+
+.company-wrap button {
+  padding: 9px;
+  border-radius: 11px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.company-wrap button.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* SECTION LABEL */
+.section-label {
+  font-size: 0.68rem;
+  color: #475569;
+  margin-bottom: 12px;
+  padding-left: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.card-btn {
+  border-radius: 18px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: 1px solid;
+}
+
+.card-btn:hover  { transform: translateY(-3px); }
+.card-btn:active { transform: translateY(-1px) scale(0.98); }
+
+.card-btn.blue  { background: rgba(59,130,246,0.07);  border-color: rgba(59,130,246,0.18); }
+.card-btn.gold  { background: rgba(234,179,8,0.07);   border-color: rgba(234,179,8,0.18); }
+.card-btn.green { background: rgba(34,197,94,0.07);   border-color: rgba(34,197,94,0.18); }
+.card-btn.red   { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.18); }
+
+.card-btn.blue:hover  { background: rgba(59,130,246,0.13); }
+.card-btn.gold:hover  { background: rgba(234,179,8,0.13); }
+.card-btn.green:hover { background: rgba(34,197,94,0.13); }
+.card-btn.red:hover   { background: rgba(239,68,68,0.13); }
+
+.card-btn .icon {
+  font-size: 26px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.card-btn.blue  .icon { color: #3b82f6; }
+.card-btn.gold  .icon { color: #eab308; }
+.card-btn.green .icon { color: #22c55e; }
+.card-btn.red   .icon { color: #ef4444; }
+
+.card-btn .label {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.card-btn.blue  .label { color: #93c5fd; }
+.card-btn.gold  .label { color: #fde68a; }
+.card-btn.green .label { color: #86efac; }
+.card-btn.red   .label { color: #fca5a5; }
+
+/* STATUS */
+.status {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.68rem;
+  color: #475569;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
 }
 </style>
+
+<!-- Tabler Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 </head>
+
 <body>
+<div class="container">
+  <div class="card">
 
-<div class="box">
-    <div class="icon">⚠️</div>
+    <div class="actions-top">
+      <button class="btn-top" onclick="location.href='historial.html'">Historial</button>
+      <button class="btn-top danger" onclick="logout()">Salir</button>
+    </div>
 
-    <h2>⚠️ API Desactualizada</h2>
+    <div class="user">
+      <img src="icons/icon-192.png" alt="Logo">
+      <div>
+        <div class="name" id="userName"></div>
+        <div class="role" id="userRole"></div>
+      </div>
+    </div>
 
-<p>
-    Se detectó una versión antigua de la API.
-    <br><br>
-    La versión actual de la aplicación no es compatible con los servicios requeridos.
-    Por favor, actualice la aplicación e inténtelo nuevamente.
-</p>
-    <button onclick="location.reload()">
-        Reintentar
-    </button>
+    <div class="company-wrap">
+      <button id="btnVTR"   onclick="setCompany('VTR')">VTR</button>
+      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
+    </div>
+
+    <div class="section-label">Acciones</div>
+
+    <div class="grid">
+
+      <div class="card-btn blue" onclick="location.href='boleta.html'">
+        <i class="ti ti-file-invoice icon" aria-hidden="true"></i>
+        <div class="label">Boleta</div>
+      </div>
+
+      <div class="card-btn gold" onclick="location.href='estado.html'">
+        <i class="ti ti-chart-bar icon" aria-hidden="true"></i>
+        <div class="label">Estado de Venta</div>
+      </div>
+
+      <div class="card-btn green" onclick="location.href='factibilidad.html'">
+        <i class="ti ti-map-pin-check icon" aria-hidden="true"></i>
+        <div class="label">Factibilidad</div>
+      </div>
+
+      <div class="card-btn red" onclick="location.href='agenda.html'">
+        <i class="ti ti-calendar-event icon" aria-hidden="true"></i>
+        <div class="label">Agenda</div>
+      </div>
+
+    </div>
+
+    <div class="status">
+      <div class="dot"></div>
+      Conectado a Legends Bot
+    </div>
+
+  </div>
 </div>
 
+<script>
+document.getElementById("userName").innerText = user.nombre;
+document.getElementById("userRole").innerText = user.rol;
+
+function setCompany(c) {
+  localStorage.setItem("legends_company", c);
+  updateCompanyUI();
+}
+
+function updateCompanyUI() {
+  const c = localStorage.getItem("legends_company") || "VTR";
+  document.getElementById("btnVTR").classList.toggle("active", c === "VTR");
+  document.getElementById("btnCLARO").classList.toggle("active", c === "CLARO");
+}
+
+updateCompanyUI();
+
+function logout() {
+  localStorage.removeItem("legends_user");
+  location.href = "login.html";
+}
+</script>
 </body>
 </html>
