@@ -10,176 +10,316 @@ const user = JSON.parse(localStorage.getItem("legends_user"));
 if (!user) location.href="login.html";
 </script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
 <style>
-:root{
-  --bg-main: radial-gradient(circle at top,#0f172a,#020617);
-  --card-bg: rgba(255,255,255,.04);
-  --border-soft: rgba(255,255,255,.1);
-  --text-muted:#9ca3af;
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
 }
 
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont;
-  background:var(--bg-main);
-  color:white;
+.screen {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
 }
 
-.screen{
-  max-width:420px;
-  margin:auto;
-  padding:28px 20px;
-}
-
-.card{
-  background:var(--card-bg);
-  border-radius:28px;
-  padding:26px;
-  box-shadow:0 50px 120px rgba(0,0,0,.65);
-  backdrop-filter:blur(12px);
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 26px;
+  padding: 28px 24px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
 }
 
 /* HEADER */
-.header{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:28px;
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
-.header h1{
-  margin:0;
-  font-size:1.4rem;
-  font-weight:600;
+.back {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 7px 12px;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
 }
 
-.header p{
-  margin:4px 0 0;
-  font-size:.75rem;
-  color:var(--text-muted);
+.back:hover {
+  background: rgba(255,255,255,0.1);
+  color: #e2e8f0;
 }
 
-.back{
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--border-soft);
-  border-radius:14px;
-  padding:6px 10px;
-  color:var(--text-muted);
-  cursor:pointer;
+.header-text { flex: 1; min-width: 0; }
+
+.header-text h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.company-badge{
-  margin-top:6px;
-  display:inline-block;
-  font-size:.65rem;
-  padding:4px 8px;
-  border-radius:999px;
-  background:rgba(255,255,255,.08);
-  color:#86efac;
+.header-text p {
+  margin: 2px 0 0;
+  font-size: 0.7rem;
+  color: #64748b;
 }
 
-/* BODY */
-.body{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
+/* COMPANY BADGE */
+.company-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  background: rgba(34,197,94,0.07);
+  border: 1px solid rgba(34,197,94,0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
 }
 
-.label{
-  font-size:.75rem;
-  color:var(--text-muted);
+.company-badge-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.input{
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--border-soft);
-  border-radius:16px;
-  padding:16px;
-  font-size:1rem;
-  color:white;
-  outline:none;
+.company-badge-left i { font-size: 22px; color: #22c55e; }
+
+.company-badge-sublabel {
+  font-size: 0.7rem;
+  color: #4b5563;
+  margin-bottom: 1px;
 }
 
-.input::placeholder{ color:#6b7280; }
-
-.primary{
-  margin-top:14px;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  border:none;
-  border-radius:18px;
-  padding:16px;
-  font-size:.95rem;
-  font-weight:600;
-  color:white;
-  cursor:pointer;
+.company-badge-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #86efac;
+  letter-spacing: 0.5px;
 }
+
+.dot-green {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: pulseGreen 1.8s infinite;
+}
+
+/* FIELDS */
+.field { margin-bottom: 14px; }
+
+.field label {
+  display: block;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-bottom: 7px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.input-wrap { position: relative; }
+
+.input-wrap i {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 17px;
+  color: #475569;
+  pointer-events: none;
+}
+
+.input-wrap input {
+  width: 100%;
+  padding: 14px 14px 14px 40px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: #020617;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-wrap input:focus {
+  border-color: rgba(34,197,94,0.5);
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.1);
+}
+
+.input-wrap input::placeholder { color: #374151; }
+
+/* BUTTON */
+.btn-primary {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: #16a34a;
+  color: #fff;
+  letter-spacing: 0.2px;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover  { background: #15803d; }
+.btn-primary:active { transform: scale(0.98); }
 
 /* WORK MODAL */
-#workModal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:var(--bg-main);
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
+#workModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, #0f172a, #020617);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-#workModal img{
-  width:90px;
-  animation:pulse 1.4s infinite;
+#workModal img {
+  width: 90px;
+  border-radius: 50%;
+  animation: pulseLogo 1.4s infinite;
 }
 
-@keyframes pulse{
-  0%{transform:scale(.9);opacity:.6}
-  50%{transform:scale(1);opacity:1}
-  100%{transform:scale(.9);opacity:.6}
+#workModal strong {
+  margin-top: 16px;
+  font-size: 1rem;
+  color: #f1f5f9;
+}
+
+#workText {
+  margin-top: 10px;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0 20px;
 }
 
 /* RESULT MODAL */
-#resultModal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.85);
-  z-index:10000;
-  align-items:center;
-  justify-content:center;
+#resultModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
-.result-card{
-  background:#020617;
-  border-radius:22px;
-  padding:20px;
-  width:90%;
-  max-width:480px;
+.result-card {
+  background: #020617;
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 22px;
+  padding: 22px;
+  width: 100%;
+  max-width: 480px;
 }
 
-.result-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.result-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
-.result-actions{
-  display:flex;
-  gap:8px;
-  margin-top:14px;
+.result-top strong { font-size: 1rem; color: #f1f5f9; }
+
+.btn-close-x {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: color 0.2s;
 }
 
-.result-actions button{
-  flex:1;
-  padding:10px;
-  border-radius:12px;
-  border:none;
-  cursor:pointer;
-  font-weight:600;
+.btn-close-x:hover { color: #e2e8f0; }
+
+#modalText {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
-.btn-pdf{background:#2563eb;color:white}
-.btn-wa{background:#22c55e;color:white}
-.btn-close{background:transparent;border:1px solid #555;color:#ccc}
+#modalImg {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  display: none;
+}
+
+.result-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.result-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.result-actions button:hover  { opacity: 0.85; }
+.result-actions button:active { transform: scale(0.97); }
+
+.btn-pdf   { background: #2563eb; color: white; }
+.btn-wa    { background: #22c55e; color: white; }
+.btn-close { background: transparent; border: 1px solid rgba(255,255,255,0.15) !important; color: #94a3b8; }
+
+/* ANIMATIONS */
+@keyframes pulseLogo {
+  0%   { transform: scale(0.9); opacity: 0.6; }
+  50%  { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+@keyframes pulseGreen {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
 </style>
 </head>
 
@@ -190,171 +330,190 @@ body{
 
     <div class="header">
       <button class="back" onclick="location.href='index.html'">← Volver</button>
-      <div>
+      <div class="header-text">
         <h1>Factibilidad</h1>
-        <p>Evaluar factibilidad técnica por dirección</p>
-        <span class="company-badge" id="companyBadge"></span>
+        <p>Cobertura técnica por dirección</p>
       </div>
     </div>
 
-    <div class="body">
-      <label class="label">Dirección</label>
-      <input id="direccion" class="input" placeholder="Ej: Av. Siempre Viva 742">
-
-      <label class="label">Comuna</label>
-      <input id="comuna" class="input" placeholder="Ej: Providencia">
-
-      <button class="primary" onclick="run()">Consultar Factibilidad</button>
+    <div class="company-badge">
+      <div class="company-badge-left">
+        <i class="ti ti-map-pin-check" aria-hidden="true"></i>
+        <div>
+          <div class="company-badge-sublabel">Empresa activa</div>
+          <div class="company-badge-name" id="companyName"></div>
+        </div>
+      </div>
+      <div class="dot-green"></div>
     </div>
+
+    <div class="field">
+      <label>Dirección</label>
+      <div class="input-wrap">
+        <i class="ti ti-home" aria-hidden="true"></i>
+        <input id="direccion" type="text" placeholder="Ej: Av. Siempre Viva 742">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Comuna</label>
+      <div class="input-wrap">
+        <i class="ti ti-building-community" aria-hidden="true"></i>
+        <input id="comuna" type="text" placeholder="Ej: Providencia">
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="run()">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      Consultar Factibilidad
+    </button>
 
   </div>
 </div>
 
-<!-- WORK -->
+<!-- WORK MODAL -->
 <div id="workModal">
-  <img src="icons/icon-192.png">
-  <strong style="margin-top:16px">Legends Bot trabajando</strong>
-  <div id="workText" style="margin-top:10px;color:#9ca3af;font-size:.85rem"></div>
+  <img src="icons/icon-192.png" alt="Legends Bot">
+  <strong>Legends Bot trabajando</strong>
+  <div id="workText"></div>
 </div>
 
-<!-- RESULT -->
+<!-- RESULT MODAL -->
 <div id="resultModal">
   <div class="result-card">
-
     <div class="result-top">
       <strong>Resultado</strong>
-      <button onclick="closeResult()" style="background:none;border:none;color:#aaa;font-size:18px">✖</button>
+      <button class="btn-close-x" onclick="closeResult()">✖</button>
     </div>
-
-    <pre id="modalText" style="margin-top:10px"></pre>
-    <img id="modalImg" style="width:100%;border-radius:12px;margin-top:10px"/>
-
+    <pre id="modalText"></pre>
+    <img id="modalImg">
     <div class="result-actions">
-      <button class="btn-pdf" onclick="downloadPDF()">PDF</button>
-      <button class="btn-wa" onclick="shareWhatsApp()">WhatsApp</button>
+      <button class="btn-pdf"   onclick="downloadPDF()">PDF</button>
+      <button class="btn-wa"    onclick="shareWhatsApp()">WhatsApp</button>
       <button class="btn-close" onclick="closeResult()">Cerrar</button>
     </div>
-
   </div>
 </div>
 
 <script>
-/* =========================
-   CONTEXTO EMPRESA
-========================= */
 const COMPANY = localStorage.getItem("legends_company") || "VTR";
-document.getElementById("companyBadge").innerText = "Empresa: " + COMPANY;
+document.getElementById("companyName").innerText = COMPANY;
 
-/* =========================
-   LÓGICA FACTIBILIDAD
-========================= */
+const API = "https://unreproached-subangularly-cristopher.ngrok-free.dev";
 
-const API="https://unreproached-subangularly-cristopher.ngrok-free.dev";
-
-const workMsgs=[
+const workMsgs = [
   "Validando dirección…",
   "Consultando cobertura…",
-  "Conectando con Andes ("+COMPANY+")…",
+  "Conectando con Andes (" + COMPANY + ")…",
   "Analizando servicios…",
   "Generando resultado…"
 ];
 
-let w=0,workTimer=null;
-let lastText="", lastImg="";
+let w = 0, workTimer = null;
+let lastText = "", lastImg = "";
 
-function showWork(){
-  workModal.style.display="flex";
-  workText.innerText=workMsgs[0];
-  workTimer=setInterval(()=>{
-    workText.innerText=workMsgs[w++%workMsgs.length];
-  },2000);
+function showWork() {
+  document.getElementById("workModal").style.display = "flex";
+  document.getElementById("workText").innerText = workMsgs[0];
+  w = 1;
+  workTimer = setInterval(() => {
+    document.getElementById("workText").innerText = workMsgs[w++ % workMsgs.length];
+  }, 2000);
 }
 
-function hideWork(){
-  workModal.style.display="none";
+function hideWork() {
+  document.getElementById("workModal").style.display = "none";
   clearInterval(workTimer);
 }
 
-function openResult(text,img){
-  lastText=text||"";
-  lastImg=img||"";
-  modalText.innerText=lastText;
-  modalImg.src=lastImg||"";
-  resultModal.style.display="flex";
+function openResult(text, img) {
+  lastText = text || "";
+  lastImg  = img  || "";
+  document.getElementById("modalText").innerText = lastText;
+  const imgEl = document.getElementById("modalImg");
+  if (lastImg) {
+    imgEl.src = lastImg;
+    imgEl.style.display = "block";
+  } else {
+    imgEl.style.display = "none";
+  }
+  document.getElementById("resultModal").style.display = "flex";
 }
 
-function closeResult(){ resultModal.style.display="none"; }
-
-function shareWhatsApp(){
-  let msg=lastText;
-  if(lastImg) msg+="\n\n📸 "+lastImg;
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+function closeResult() {
+  document.getElementById("resultModal").style.display = "none";
 }
 
-async function downloadPDF(){
+function shareWhatsApp() {
+  let msg = lastText;
+  if (lastImg) msg += "\n\n📸 " + lastImg;
+  window.open("https://wa.me/?text=" + encodeURIComponent(msg));
+}
+
+async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const pdf=new jsPDF();
-  const lines=pdf.splitTextToSize(lastText,180);
-  pdf.text(lines,10,10);
+  const pdf = new jsPDF();
+  const lines = pdf.splitTextToSize(lastText, 180);
+  pdf.text(lines, 10, 10);
   pdf.save("factibilidad_legends.pdf");
 }
 
-async function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function run(){
-  const direccion=document.getElementById("direccion").value.trim();
-  const comuna=document.getElementById("comuna").value.trim();
-  if(!direccion || !comuna) return alert("Completá dirección y comuna");
+async function run() {
+  const direccion = document.getElementById("direccion").value.trim();
+  const comuna    = document.getElementById("comuna").value.trim();
+  if (!direccion || !comuna) return alert("Completá dirección y comuna");
 
   showWork();
 
-  const start=await fetch(API+"/factibilidad",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json",
-      "ngrok-skip-browser-warning":"true"
-    },
-    body:JSON.stringify({
-      direccion,
-      comuna,
-      company: COMPANY,
-      email: user.email
-    })
-  });
-
-  const data=await start.json();
-  const pollUrl=API+"/factibilidad/"+data.jobId;
-
-  while(true){
-    await sleep(2000);
-    const poll=await fetch(pollUrl,{
-      headers:{"ngrok-skip-browser-warning":"true"}
+  try {
+    const start = await fetch(API + "/factibilidad", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true"
+      },
+      body: JSON.stringify({ direccion, comuna, company: COMPANY, email: user.email })
     });
-    const res=await poll.json();
 
-    if(res.status==="queued"||res.status==="running") continue;
+    const data = await start.json();
+    const pollUrl = API + "/factibilidad/" + data.jobId;
 
-    hideWork();
-
-    if(res.status==="error"){
-      openResult(res.error,"");
-      return;
-    }
-
-    if(res.status==="done"){
-      const history = JSON.parse(localStorage.getItem("legends_history")||"[]");
-      history.unshift({
-        fecha:new Date().toLocaleString(),
-        tipo:"factibilidad",
-        company: COMPANY,
-        datos:{ direccion, comuna },
-        resultado:res.resultado || "",
-        captura:res.capturaUrl || ""
+    while (true) {
+      await sleep(2000);
+      const poll = await fetch(pollUrl, {
+        headers: { "ngrok-skip-browser-warning": "true" }
       });
-      localStorage.setItem("legends_history",JSON.stringify(history));
-      openResult(res.resultado,res.capturaUrl);
-      return;
+      const res = await poll.json();
+
+      if (res.status === "queued" || res.status === "running") continue;
+
+      hideWork();
+
+      if (res.status === "error") {
+        openResult(res.error, "");
+        return;
+      }
+
+      if (res.status === "done") {
+        const history = JSON.parse(localStorage.getItem("legends_history") || "[]");
+        history.unshift({
+          fecha: new Date().toLocaleString(),
+          tipo: "factibilidad",
+          company: COMPANY,
+          datos: { direccion, comuna },
+          resultado: res.resultado || "",
+          captura: res.capturaUrl || ""
+        });
+        localStorage.setItem("legends_history", JSON.stringify(history));
+        openResult(res.resultado, res.capturaUrl);
+        return;
+      }
     }
+  } catch (err) {
+    hideWork();
+    openResult("Error de conexión con la API", "");
   }
 }
 </script>
