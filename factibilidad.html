@@ -9,6 +9,7 @@
 const user = JSON.parse(localStorage.getItem("legends_user"));
 if (!user) location.href="login.html";
 </script>
+  <script src="config.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
@@ -399,7 +400,7 @@ body {
 const COMPANY = localStorage.getItem("legends_company") || "VTR";
 document.getElementById("companyName").innerText = COMPANY;
 
-const API = "https://unreproached-subangularly-cristopher.ngrok-free.dev";
+const API = API_BASE;
 
 const workMsgs = [
   "Validando dirección…",
