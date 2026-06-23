@@ -393,7 +393,8 @@ body {
       <button class="btn-close-x" onclick="closeResult()">✖</button>
     </div>
     <pre id="modalText"></pre>
-    <button id="btnVerBoleta" onclick="verBoleta()">
+<img id="modalImg" style="width:100%; border-radius:12px; margin-bottom:14px;">  <!-- ← agregar -->
+<button id="btnVerBoleta" ...>
       <i class="ti ti-external-link" style="font-size:15px;" aria-hidden="true"></i>
       Ver boleta
     </button>
@@ -440,8 +441,9 @@ function openResult(text) {
   lastText = text || "";
   lastLink = "";
 
-  const modalText   = document.getElementById("modalText");
+  const modalText    = document.getElementById("modalText");
   const btnVerBoleta = document.getElementById("btnVerBoleta");
+  const imgEl        = document.getElementById("modalImg"); // ← agregar img al HTML también
 
   modalText.innerText = "";
   btnVerBoleta.style.display = "none";
@@ -452,6 +454,12 @@ function openResult(text) {
     btnVerBoleta.style.display = "flex";
   } else {
     modalText.innerText = lastText;
+  }
+
+
+  if (imgEl) {
+    imgEl.src = "icons/no-screenshot.png";
+    imgEl.style.display = "block";
   }
 
   document.getElementById("resultModal").style.display = "flex";
