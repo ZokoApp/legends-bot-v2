@@ -393,8 +393,7 @@ body {
       <button class="btn-close-x" onclick="closeResult()">✖</button>
     </div>
     <pre id="modalText"></pre>
-<img id="modalImg" style="width:100%; border-radius:12px; margin-bottom:14px;">  <!-- ← agregar -->
-<button id="btnVerBoleta" ...>
+    <button id="btnVerBoleta" onclick="verBoleta()">
       <i class="ti ti-external-link" style="font-size:15px;" aria-hidden="true"></i>
       Ver boleta
     </button>
@@ -441,26 +440,18 @@ function openResult(text) {
   lastText = text || "";
   lastLink = "";
 
-  const modalText    = document.getElementById("modalText");
+  const modalText   = document.getElementById("modalText");
   const btnVerBoleta = document.getElementById("btnVerBoleta");
-  const imgEl        = document.getElementById("modalImg");
 
-  modalText.innerText = "N/A"; 
-  btnVerBoleta.style.display = "none"; 
+  modalText.innerText = "";
+  btnVerBoleta.style.display = "none";
 
-  if (imgEl) {
-    imgEl.src = "icons/no-screenshot.png";
-    imgEl.style.display = "block";
-  }
-
-  document.getElementById("resultModal").style.display = "flex";
-}
-
-
-
-  if (imgEl) {
-    imgEl.src = "icons/no-screenshot.png";
-    imgEl.style.display = "block";
+  if (typeof lastText === "string" && lastText.startsWith("http")) {
+    lastLink = lastText;
+    modalText.innerText = "Boleta disponible";
+    btnVerBoleta.style.display = "flex";
+  } else {
+    modalText.innerText = lastText;
   }
 
   document.getElementById("resultModal").style.display = "flex";
