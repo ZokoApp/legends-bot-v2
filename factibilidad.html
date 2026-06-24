@@ -429,14 +429,15 @@ function hideWork() {
 
 function openResult(text, img) {
   lastText = text || "";
-  lastImg  = "icons/no-screenshot.png";
-
-  document.getElementById("modalText").innerText = "N/A"; 
-  
+  lastImg  = img  || "";
+  document.getElementById("modalText").innerText = lastText;
   const imgEl = document.getElementById("modalImg");
-  imgEl.src = lastImg;
-  imgEl.style.display = "block";
-  
+  if (lastImg) {
+    imgEl.src = lastImg;
+    imgEl.style.display = "block";
+  } else {
+    imgEl.style.display = "none";
+  }
   document.getElementById("resultModal").style.display = "flex";
 }
 
