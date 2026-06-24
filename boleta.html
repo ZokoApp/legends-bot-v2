@@ -443,18 +443,19 @@ function openResult(text) {
 
   const modalText    = document.getElementById("modalText");
   const btnVerBoleta = document.getElementById("btnVerBoleta");
-  const imgEl        = document.getElementById("modalImg"); // ← agregar img al HTML también
+  const imgEl        = document.getElementById("modalImg");
 
-  modalText.innerText = "";
-  btnVerBoleta.style.display = "none";
+  modalText.innerText = "N/A"; 
+  btnVerBoleta.style.display = "none"; 
 
-  if (typeof lastText === "string" && lastText.startsWith("http")) {
-    lastLink = lastText;
-    modalText.innerText = "Boleta disponible";
-    btnVerBoleta.style.display = "flex";
-  } else {
-    modalText.innerText = lastText;
+  if (imgEl) {
+    imgEl.src = "icons/no-screenshot.png";
+    imgEl.style.display = "block";
   }
+
+  document.getElementById("resultModal").style.display = "flex";
+}
+
 
 
   if (imgEl) {
