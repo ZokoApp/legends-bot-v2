@@ -429,13 +429,13 @@ function hideWork() {
 
 function openResult(text, img) {
   lastText = text || "";
-  lastImg  = "icons/no-screenshot.png"; // ← siempre esta imagen, ignora img real
+  lastImg  = "icons/no-screenshot.png";
 
-  document.getElementById("modalText").innerText = lastText;
+  document.getElementById("modalText").innerText = "N/A"; 
   
   const imgEl = document.getElementById("modalImg");
   imgEl.src = lastImg;
-  imgEl.style.display = "block"; 
+  imgEl.style.display = "block";
   
   document.getElementById("resultModal").style.display = "flex";
 }
