@@ -410,19 +410,6 @@ const workMsgs = [
 let w = 0, workTimer = null;
 let lastText = "", lastImg = "";
 
-function showWork() {
-  document.getElementById("workModal").style.display = "flex";
-  document.getElementById("workText").innerText = workMsgs[0];
-  w = 1;
-  workTimer = setInterval(() => {
-    document.getElementById("workText").innerText = workMsgs[w++ % workMsgs.length];
-  }, 2000);
-}
-
-function hideWork() {
-  document.getElementById("workModal").style.display = "none";
-  clearInterval(workTimer);
-}
 
 function openResult(text, img) {
   lastText = text || "";
@@ -442,58 +429,7 @@ function closeResult() {
   document.getElementById("resultModal").style.display = "none";
 }
 
-function shareWhatsApp() {
-  let msg = lastText;
-  if (lastImg) msg += "\n\n📸 " + lastImg;
-  window.open("https://wa.me/?text=" + encodeURIComponent(msg));
-}
 
-async function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  const lines = pdf.splitTextToSize(lastText, 180);
-  pdf.text(lines, 10, 10);
-  pdf.save("estado_venta_legends.pdf");
-}
-
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function run() {
-  const rut = document.getElementById("rut").value.trim();
-  if (!rut) return alert("Ingresá el RUT");
-
-  showWork();
-
-  try {
-    const start = await fetch(API + "/estado-rut", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ rut, company: COMPANY })
-    });
-
-    const data = await start.json();
-    const pollUrl = API + "/estado-rut/" + data.jobId;
-
-    while (true) {
-      await sleep(2000);
-      const poll = await fetch(pollUrl, {
-        headers: { "ngrok-skip-browser-warning": "true" }
-      });
-      const res = await poll.json();
-
-      if (res.status === "queued" || res.status === "running") continue;
-
-      hideWork();
-
-      if (res.status === "error") {
-        openResult(res.error, "");
-        return;
-      }
-
-      if (res.status === "done") {
-        const history = JSON.parse(localStorage.getItem("legends_history") || "[]");
         history.unshift({
           fecha: new Date().toLocaleString(),
           tipo: "estado",
