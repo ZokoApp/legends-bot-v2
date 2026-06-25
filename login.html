@@ -11,22 +11,37 @@
       margin: 0;
       min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: radial-gradient(circle at top, #0f172a, #020617);
+      background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #e5e7eb;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .login-card {
+      position: relative;
+      z-index: 10;
       width: 100%;
       max-width: 400px;
-      background: rgba(255,255,255,0.06);
+      background: rgba(2,6,23,0.75);
       border: 0.5px solid rgba(255,255,255,0.12);
       border-radius: 20px;
       padding: 36px 28px 30px;
-      box-shadow: 0 2px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 40px rgba(0,0,0,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       animation: fadeIn 0.4s ease;
+      margin: 20px;
     }
 
     @keyframes fadeIn {
@@ -72,9 +87,7 @@
       to   { opacity: 1; transform: scale(1); }
     }
 
-    .field {
-      margin-bottom: 14px;
-    }
+    .field { margin-bottom: 14px; }
 
     .field label {
       display: block;
@@ -85,9 +98,7 @@
       text-transform: uppercase;
     }
 
-    .input-wrap {
-      position: relative;
-    }
+    .input-wrap { position: relative; }
 
     .input-wrap svg {
       position: absolute;
@@ -109,7 +120,7 @@
       padding: 13px 14px 13px 38px;
       border-radius: 12px;
       border: 1.5px solid rgba(255,255,255,0.08);
-      background: #020617;
+      background: rgba(2,6,23,0.9);
       color: #e2e8f0;
       font-size: 0.9rem;
       outline: none;
@@ -121,9 +132,7 @@
       box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
     }
 
-    .field input::placeholder {
-      color: #334155;
-    }
+    .field input::placeholder { color: #334155; }
 
     .btn {
       width: 100%;
@@ -138,6 +147,7 @@
       background: #2563eb;
       color: #fff;
       transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
     }
 
     .btn:hover  { background: #1d4ed8; }
@@ -165,6 +175,8 @@
 </head>
 
 <body>
+<canvas id="matrixCanvas"></canvas>
+
 <div class="login-card">
   <div class="logo">Legends Bot</div>
   <div class="subtitle">Acceso interno autorizado</div>
@@ -199,12 +211,61 @@
   </div>
 </div>
 
+<script>
+/* ============ MATRIX ============ */
+const canvas = document.getElementById("matrixCanvas");
+const ctx    = canvas.getContext("2d");
+const FONT   = 13;
+let columns  = [];
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const cols = Math.floor(canvas.width / FONT);
+  columns = Array.from({ length: cols }, () => ({
+    y:       Math.random() * -canvas.height,
+    speed:   0.4 + Math.random() * 0.8,
+    opacity: 0.04 + Math.random() * 0.08,
+    length:  8 + Math.floor(Math.random() * 20)
+  }));
+}
+
+function draw() {
+  ctx.fillStyle = "rgba(2,6,23,0.08)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = `${FONT}px 'SF Mono', monospace`;
+  columns.forEach((col, i) => {
+    const x = i * FONT;
+    for (let j = 0; j < col.length; j++) {
+      const alpha = col.opacity * (1 - j / col.length);
+      ctx.fillStyle = j === 0
+        ? `rgba(147,197,253,${col.opacity * 2.5})`
+        : `rgba(37,99,235,${alpha})`;
+      ctx.fillText(Math.random() > 0.5 ? "1" : "0", x, col.y - j * FONT);
+    }
+    col.y += col.speed;
+    if (col.y - col.length * FONT > canvas.height) {
+      col.y      = Math.random() * -200;
+      col.speed  = 0.4 + Math.random() * 0.8;
+      col.opacity = 0.04 + Math.random() * 0.08;
+      col.length = 8 + Math.floor(Math.random() * 20);
+    }
+  });
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener("resize", resize);
+resize();
+draw();
+
+/* ============ LOGIN ============ */
+</script>
 <script src="config.js"></script>
 <script>
 const LOGIN_API = API_BASE + "/login";
 
 async function login() {
-  const email = document.getElementById("email").value.trim().toLowerCase();
+  const email    = document.getElementById("email").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
   const errorBox = document.getElementById("error");
 
