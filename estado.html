@@ -470,7 +470,7 @@ async function run() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ rut, company: COMPANY })
+      body: JSON.stringify({ rut, company: COMPANY, agente: user?.nombre || user?.email || "desconocido" })
     });
 
     const data = await start.json();
