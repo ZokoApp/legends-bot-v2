@@ -475,7 +475,7 @@ async function run() {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "true"
       },
-      body: JSON.stringify({ direccion, comuna, company: COMPANY, email: user.email })
+     body: JSON.stringify({ direccion, comuna, company: COMPANY, agente: user?.nombre || user?.email || "desconocido" })
     });
 
     const data = await start.json();
