@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://carolina-instantly-invoice-activated.trycloudflare.com";
+const API_BASE = "https://thee-roman-accepts-car.trycloudflare.com";
