@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://lock-screening-elvis-app.trycloudflare.com";
+const API_BASE = "https://rise-golden-tall-headquarters.trycloudflare.com";
