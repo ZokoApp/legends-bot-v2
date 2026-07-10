@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://java-sally-maximum-antique.trycloudflare.com";
+const API_BASE = "https://page-send-ethics-roughly.trycloudflare.com";
