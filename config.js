@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://bios-proc-closely-russell.trycloudflare.com";
+const API_BASE = "https://possibility-came-petite-towards.trycloudflare.com";
