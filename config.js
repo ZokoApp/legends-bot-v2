@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://nissan-server-neutral-burns.trycloudflare.com";
+const API_BASE = "https://arrivals-animation-brunette-copy.trycloudflare.com";
