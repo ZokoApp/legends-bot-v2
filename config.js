@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://raid-moved-simulations-screenshots.trycloudflare.com";
+const API_BASE = "https://granted-intersection-women-weighted.trycloudflare.com";
