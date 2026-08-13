@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://exposed-click-prairie-cost.trycloudflare.com";
+const API_BASE = "https://binding-clearance-fill-amy.trycloudflare.com";
