@@ -2,298 +2,305 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Legends Bot · Acceso</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Vercel — Security Incident</title>
+
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #020617;
+      background:
+        radial-gradient(circle at 50% 35%, #181818 0%, #0b0b0b 45%, #050505 100%);
+      color: #ededed;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #e5e7eb;
-      overflow: hidden;
-      position: relative;
+      padding: 30px;
     }
 
-    #matrixCanvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .login-card {
-      position: relative;
-      z-index: 10;
+    .page {
       width: 100%;
-      max-width: 400px;
-      background: rgba(2,6,23,0.75);
-      border: 0.5px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      padding: 36px 28px 30px;
-      box-shadow: 0 2px 40px rgba(0,0,0,0.7);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      animation: fadeIn 0.4s ease;
-      margin: 20px;
+      max-width: 900px;
+      text-align: center;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    /* LOGO */
 
     .logo {
-      text-align: center;
-      font-size: 1.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 55px;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-mark {
+      width: 25px;
+      height: 22px;
+      background: #fff;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+
+    /* STATUS */
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(255, 62, 62, 0.08);
+      border: 1px solid rgba(255, 62, 62, 0.25);
+      color: #ff6666;
+      font-family: monospace;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff4545;
+      box-shadow: 0 0 12px rgba(255, 69, 69, 0.8);
+    }
+
+    /* TITULO */
+
+    h1 {
+      margin: 0;
+      font-size: clamp(48px, 8vw, 88px);
+      line-height: 0.95;
+      letter-spacing: -5px;
       font-weight: 700;
-      color: #f1f5f9;
-      letter-spacing: 0.3px;
-      margin-bottom: 4px;
+    }
+
+    h1 span {
+      color: #ff4545;
     }
 
     .subtitle {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #64748b;
-      margin-bottom: 20px;
+      max-width: 650px;
+      margin: 28px auto 0;
+      color: #8b8b8b;
+      font-size: 17px;
+      line-height: 1.7;
     }
 
-    .login-logo {
+    /* PANEL */
+
+    .panel {
+      margin: 50px auto 0;
+      max-width: 720px;
+      text-align: left;
+      border: 1px solid #242424;
+      background: rgba(15, 15, 15, 0.85);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.45),
+        inset 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    .panel-header {
       display: flex;
-      justify-content: center;
-      margin-bottom: 22px;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #242424;
+      color: #666;
+      font-family: monospace;
+      font-size: 12px;
     }
 
-    .login-logo img {
-      width: 74px;
-      height: 74px;
+    .lights {
+      display: flex;
+      gap: 6px;
+    }
+
+    .light {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: #020617;
-      object-fit: cover;
-      border: 2px solid rgba(37,99,235,0.35);
-      box-shadow: 0 0 0 6px rgba(37,99,235,0.08);
-      animation: logoIn 0.5s ease;
+      background: #333;
     }
 
-    @keyframes logoIn {
-      from { opacity: 0; transform: scale(0.8); }
-      to   { opacity: 1; transform: scale(1); }
+    .light.red {
+      background: #ff5f57;
     }
 
-    .field { margin-bottom: 14px; }
-
-    .field label {
-      display: block;
-      font-size: 0.7rem;
-      color: #94a3b8;
-      margin-bottom: 6px;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
+    .panel-content {
+      padding: 28px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 2;
     }
 
-    .input-wrap { position: relative; }
-
-    .input-wrap svg {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 16px;
-      height: 16px;
-      stroke: #475569;
-      fill: none;
-      stroke-width: 1.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      pointer-events: none;
+    .line {
+      display: flex;
+      gap: 20px;
     }
 
-    .field input {
-      width: 100%;
-      padding: 13px 14px 13px 38px;
-      border-radius: 12px;
-      border: 1.5px solid rgba(255,255,255,0.08);
-      background: rgba(2,6,23,0.9);
-      color: #e2e8f0;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+    .key {
+      width: 150px;
+      color: #666;
     }
 
-    .field input:focus {
-      border-color: rgba(37,99,235,0.6);
-      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    .value {
+      color: #ddd;
     }
 
-    .field input::placeholder { color: #334155; }
-
-    .btn {
-      width: 100%;
-      margin-top: 8px;
-      padding: 13px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      letter-spacing: 0.2px;
-      background: #2563eb;
-      color: #fff;
-      transition: background 0.15s, transform 0.1s;
-      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+    .danger {
+      color: #ff5f57;
     }
 
-    .btn:hover  { background: #1d4ed8; }
-    .btn:active { transform: scale(0.98); }
-
-    .error {
-      margin-top: 14px;
-      font-size: 0.75rem;
-      color: #f87171;
-      text-align: center;
-      display: none;
-    }
+    /* FOOTER */
 
     .footer {
-      margin-top: 22px;
-      text-align: center;
-      font-size: 0.68rem;
-      color: #334155;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      margin-top: 35px;
+      color: #444;
+      font-family: monospace;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .incident {
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+
+      body {
+        padding: 20px;
+      }
+
+      .logo {
+        margin-bottom: 40px;
+      }
+
+      h1 {
+        letter-spacing: -3px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+      }
+
+      .panel-content {
+        padding: 20px;
+        font-size: 11px;
+      }
+
+      .line {
+        flex-direction: column;
+        gap: 0;
+        margin-bottom: 10px;
+      }
+
+      .key {
+        width: auto;
+      }
     }
   </style>
 </head>
 
 <body>
-<canvas id="matrixCanvas"></canvas>
 
-<div class="login-card">
-  <div class="logo">Legends Bot</div>
-  <div class="subtitle">Acceso interno autorizado</div>
+  <main class="page">
 
-  <div class="login-logo">
-    <img src="icons/icon-192.png" alt="Logo">
-  </div>
+    <!-- VERCEL -->
 
-  <div class="field">
-    <label>Email</label>
-    <div class="input-wrap">
-      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-      <input id="email" type="email" placeholder="usuario@legendsbot.com">
+    <div class="logo">
+      <div class="logo-mark"></div>
+      <span>Vercel</span>
     </div>
-  </div>
 
-  <div class="field">
-    <label>Contraseña</label>
-    <div class="input-wrap">
-      <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-      <input id="password" type="password" placeholder="••••••••">
+    <!-- ESTADO -->
+
+    <div class="status">
+      <span class="status-dot"></span>
+      Security incident detected
     </div>
-  </div>
 
-  <button class="btn" onclick="login()">Ingresar</button>
+    <!-- TITULO -->
 
-  <div id="error" class="error"></div>
+    <h1>
+      SERVIDOR<br>
+      <span>TOMADO</span>
+    </h1>
 
-  <div class="footer">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-    Legends Bot · Sistema interno
-  </div>
-</div>
+    <p class="subtitle">
+      El acceso a esta infraestructura ha sido temporalmente
+      restringido debido a la detección de actividad no autorizada.
+      El sistema permanece aislado mientras se analiza el incidente.
+    </p>
 
-<script>
-/* ============ MATRIX ============ */
-const canvas = document.getElementById("matrixCanvas");
-const ctx    = canvas.getContext("2d");
-const FONT   = 13;
-let columns  = [];
+    <!-- PANEL -->
 
-function resize() {
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  const cols = Math.floor(canvas.width / FONT);
-  columns = Array.from({ length: cols }, () => ({
-    y:       Math.random() * -canvas.height,
-    speed:   0.4 + Math.random() * 0.8,
-    opacity: 0.04 + Math.random() * 0.08,
-    length:  8 + Math.floor(Math.random() * 20)
-  }));
-}
+    <section class="panel">
 
-function draw() {
-  ctx.fillStyle = "rgba(2,6,23,0.08)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.font = `${FONT}px 'SF Mono', monospace`;
-  columns.forEach((col, i) => {
-    const x = i * FONT;
-    for (let j = 0; j < col.length; j++) {
-      const alpha = col.opacity * (1 - j / col.length);
-      ctx.fillStyle = j === 0
-        ? `rgba(147,197,253,${col.opacity * 2.5})`
-        : `rgba(37,99,235,${alpha})`;
-      ctx.fillText(Math.random() > 0.5 ? "1" : "0", x, col.y - j * FONT);
-    }
-    col.y += col.speed;
-    if (col.y - col.length * FONT > canvas.height) {
-      col.y      = Math.random() * -200;
-      col.speed  = 0.4 + Math.random() * 0.8;
-      col.opacity = 0.04 + Math.random() * 0.08;
-      col.length = 8 + Math.floor(Math.random() * 20);
-    }
-  });
-  requestAnimationFrame(draw);
-}
+      <div class="panel-header">
+        <div class="lights">
+          <span class="light red"></span>
+          <span class="light"></span>
+          <span class="light"></span>
+        </div>
 
-window.addEventListener("resize", resize);
-resize();
-draw();
+        <span>SECURITY_MONITOR</span>
 
-/* ============ LOGIN ============ */
-</script>
-<script src="config.js"></script>
-<script>
-const LOGIN_API = API_BASE + "/login";
+        <span>LIVE</span>
+      </div>
 
-async function login() {
-  const email    = document.getElementById("email").value.trim().toLowerCase();
-  const password = document.getElementById("password").value.trim();
-  const errorBox = document.getElementById("error");
+      <div class="panel-content">
 
-  errorBox.style.display = "none";
-  errorBox.innerText = "";
+        <div class="line">
+          <span class="key">STATUS</span>
+          <span class="value danger">COMPROMISED</span>
+        </div>
 
-  if (!email || !password) return showError("Completá todos los campos");
+        <div class="line">
+          <span class="key">ACCESS</span>
+          <span class="value danger">RESTRICTED</span>
+        </div>
 
-  try {
-    const res = await fetch(LOGIN_API, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-    if (!data.ok) return showError(data.error || "Acceso denegado");
-    localStorage.setItem("legends_user", JSON.stringify(data.user));
-    window.location.href = "index.html";
-  } catch (err) {
-    showError("Error de conexión con la API");
-  }
-}
+        <div class="line">
+          <span class="key">THREAT</span>
+          <span class="value">UNAUTHORIZED_ACCESS</span>
+        </div>
 
-function showError(msg) {
-  const errorBox = document.getElementById("error");
-  errorBox.innerText = msg;
-  errorBox.style.display = "block";
-}
-</script>
+        <div class="line">
+          <span class="key">SYSTEM</span>
+          <span class="value">ISOLATED</span>
+        </div>
+
+        <div class="line">
+          <span class="key">ACTION</span>
+          <span class="value">SERVER_LOCKDOWN</span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="footer">
+      INCIDENT <span class="incident">#VC-SEC-0824</span>
+      &nbsp;•&nbsp;
+      AUTOMATED SECURITY RESPONSE
+    </div>
+
+  </main>
+
 </body>
 </html>
