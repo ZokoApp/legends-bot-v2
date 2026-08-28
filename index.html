@@ -1,306 +1,351 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legends Bot</title>
 
-  <title>Vercel — Security Incident</title>
+<script>
+const user = JSON.parse(localStorage.getItem("legends_user"));
+if (!user) location.href="login.html";
+</script>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#020617">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at 50% 35%, #181818 0%, #0b0b0b 45%, #050505 100%);
-      color: #ededed;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 30px;
-    }
+<style>
+* { box-sizing: border-box; }
 
-    .page {
-      width: 100%;
-      max-width: 900px;
-      text-align: center;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  overflow: hidden;
+  position: relative;
+}
 
-    /* LOGO */
+#matrixCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 55px;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-    }
+.container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
 
-    .logo-mark {
-      width: 25px;
-      height: 22px;
-      background: #fff;
-      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-    }
+.card {
+  background: rgba(2,6,23,0.75);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 26px;
+  padding: 24px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
 
-    /* STATUS */
+.actions-top {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 18px;
+}
 
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 7px 13px;
-      border-radius: 999px;
-      background: rgba(255, 62, 62, 0.08);
-      border: 1px solid rgba(255, 62, 62, 0.25);
-      color: #ff6666;
-      font-family: monospace;
-      font-size: 12px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 25px;
-    }
+.btn-top {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
 
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ff4545;
-      box-shadow: 0 0 12px rgba(255, 69, 69, 0.8);
-    }
+.btn-top:hover {
+  border-color: rgba(255,255,255,0.25);
+  color: #e2e8f0;
+}
 
-    /* TITULO */
+.btn-top.danger {
+  border-color: rgba(239,68,68,0.25);
+  color: #f87171;
+}
 
-    h1 {
-      margin: 0;
-      font-size: clamp(48px, 8vw, 88px);
-      line-height: 0.95;
-      letter-spacing: -5px;
-      font-weight: 700;
-    }
+.btn-top.danger:hover {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.5);
+}
 
-    h1 span {
-      color: #ff4545;
-    }
+.user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
 
-    .subtitle {
-      max-width: 650px;
-      margin: 28px auto 0;
-      color: #8b8b8b;
-      font-size: 17px;
-      line-height: 1.7;
-    }
+.user img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(59,130,246,0.35);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
+}
 
-    /* PANEL */
+.user .name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
 
-    .panel {
-      margin: 50px auto 0;
-      max-width: 720px;
-      text-align: left;
-      border: 1px solid #242424;
-      background: rgba(15, 15, 15, 0.85);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.45),
-        inset 0 1px rgba(255, 255, 255, 0.03);
-    }
+.user .role {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-top: 1px;
+}
 
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      border-bottom: 1px solid #242424;
-      color: #666;
-      font-family: monospace;
-      font-size: 12px;
-    }
+.company-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 22px;
+}
 
-    .lights {
-      display: flex;
-      gap: 6px;
-    }
+.company-wrap button {
+  padding: 9px;
+  border-radius: 11px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
 
-    .light {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #333;
-    }
+.company-wrap button.active {
+  background: #2563eb;
+  color: #fff;
+}
 
-    .light.red {
-      background: #ff5f57;
-    }
+.section-label {
+  font-size: 0.68rem;
+  color: #475569;
+  margin-bottom: 12px;
+  padding-left: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
-    .panel-content {
-      padding: 28px;
-      font-family: monospace;
-      font-size: 13px;
-      line-height: 2;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-    .line {
-      display: flex;
-      gap: 20px;
-    }
+.card-btn {
+  border-radius: 18px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  border: 1px solid;
+}
 
-    .key {
-      width: 150px;
-      color: #666;
-    }
+.card-btn:hover  { transform: translateY(-3px); }
+.card-btn:active { transform: translateY(-1px) scale(0.98); }
 
-    .value {
-      color: #ddd;
-    }
+.card-btn.blue  { background: rgba(59,130,246,0.07);  border-color: rgba(59,130,246,0.18); }
+.card-btn.gold  { background: rgba(234,179,8,0.07);   border-color: rgba(234,179,8,0.18); }
+.card-btn.green { background: rgba(34,197,94,0.07);   border-color: rgba(34,197,94,0.18); }
+.card-btn.red   { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.18); }
 
-    .danger {
-      color: #ff5f57;
-    }
+.card-btn.blue:hover  { background: rgba(59,130,246,0.13); }
+.card-btn.gold:hover  { background: rgba(234,179,8,0.13); }
+.card-btn.green:hover { background: rgba(34,197,94,0.13); }
+.card-btn.red:hover   { background: rgba(239,68,68,0.13); }
 
-    /* FOOTER */
+.card-btn .icon {
+  font-size: 26px;
+  display: block;
+  margin-bottom: 8px;
+}
 
-    .footer {
-      margin-top: 35px;
-      color: #444;
-      font-family: monospace;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-    }
+.card-btn.blue  .icon { color: #3b82f6; }
+.card-btn.gold  .icon { color: #eab308; }
+.card-btn.green .icon { color: #22c55e; }
+.card-btn.red   .icon { color: #ef4444; }
 
-    .incident {
-      color: #666;
-    }
+.card-btn .label { font-weight: 600; font-size: 0.85rem; }
 
-    @media (max-width: 600px) {
+.card-btn.blue  .label { color: #93c5fd; }
+.card-btn.gold  .label { color: #fde68a; }
+.card-btn.green .label { color: #86efac; }
+.card-btn.red   .label { color: #fca5a5; }
 
-      body {
-        padding: 20px;
-      }
+.status {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.68rem;
+  color: #475569;
+}
 
-      .logo {
-        margin-bottom: 40px;
-      }
+.dot {
+  width: 7px;
+  height: 7px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse 1.8s infinite;
+  flex-shrink: 0;
+}
 
-      h1 {
-        letter-spacing: -3px;
-      }
-
-      .subtitle {
-        font-size: 15px;
-      }
-
-      .panel-content {
-        padding: 20px;
-        font-size: 11px;
-      }
-
-      .line {
-        flex-direction: column;
-        gap: 0;
-        margin-bottom: 10px;
-      }
-
-      .key {
-        width: auto;
-      }
-    }
-  </style>
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+</style>
 </head>
 
 <body>
+<canvas id="matrixCanvas"></canvas>
 
-  <main class="page">
+<div class="container">
+  <div class="card">
 
-    <!-- VERCEL -->
-
-    <div class="logo">
-      <div class="logo-mark"></div>
-      <span>Vercel</span>
+    <div class="actions-top">
+      <button class="btn-top" onclick="location.href='historial.html'">Historial</button>
+      <button class="btn-top danger" onclick="logout()">Salir</button>
     </div>
 
-    <!-- ESTADO -->
+    <div class="user">
+      <img src="icons/icon-192.png" alt="Logo">
+      <div>
+        <div class="name" id="userName"></div>
+        <div class="role" id="userRole"></div>
+      </div>
+    </div>
+
+    <div class="company-wrap">
+      <button id="btnVTR"   onclick="setCompany('VTR')">VTR</button>
+      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
+    </div>
+
+    <div class="section-label">Acciones</div>
+
+    <div class="grid">
+      <div class="card-btn blue" onclick="location.href='boleta.html'">
+        <i class="ti ti-file-invoice icon" aria-hidden="true"></i>
+        <div class="label">Boleta</div>
+      </div>
+      <div class="card-btn gold" onclick="location.href='estado.html'">
+        <i class="ti ti-chart-bar icon" aria-hidden="true"></i>
+        <div class="label">Estado de Venta</div>
+      </div>
+      <div class="card-btn green" onclick="location.href='factibilidad.html'">
+        <i class="ti ti-map-pin-check icon" aria-hidden="true"></i>
+        <div class="label">Factibilidad</div>
+      </div>
+      <div class="card-btn red" onclick="location.href='agenda.html'">
+        <i class="ti ti-calendar-event icon" aria-hidden="true"></i>
+        <div class="label">Agenda</div>
+      </div>
+    </div>
 
     <div class="status">
-      <span class="status-dot"></span>
-      Security incident detected
+      <div class="dot"></div>
+      Conectado a Legends Bot
     </div>
 
-    <!-- TITULO -->
+  </div>
+</div>
 
-    <h1>
-      SERVIDOR<br>
-      <span>TOMADO</span>
-    </h1>
+<script>
+/* ============ MATRIX ============ */
+const canvas = document.getElementById("matrixCanvas");
+const ctx    = canvas.getContext("2d");
+const FONT   = 13;
+let columns  = [];
 
-    <p class="subtitle">
-      El acceso a esta infraestructura ha sido temporalmente
-      restringido debido a la detección de actividad no autorizada.
-      El sistema permanece aislado mientras se analiza el incidente.
-    </p>
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const cols = Math.floor(canvas.width / FONT);
+  columns = Array.from({ length: cols }, () => ({
+    y:       Math.random() * -canvas.height,
+    speed:   0.4 + Math.random() * 0.8,
+    opacity: 0.04 + Math.random() * 0.08,
+    length:  8 + Math.floor(Math.random() * 20)
+  }));
+}
 
-    <!-- PANEL -->
+function draw() {
+  ctx.fillStyle = "rgba(2,6,23,0.08)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = `${FONT}px 'SF Mono', monospace`;
+  columns.forEach((col, i) => {
+    const x = i * FONT;
+    for (let j = 0; j < col.length; j++) {
+      const alpha = col.opacity * (1 - j / col.length);
+      ctx.fillStyle = j === 0
+        ? `rgba(147,197,253,${col.opacity * 2.5})`
+        : `rgba(37,99,235,${alpha})`;
+      ctx.fillText(Math.random() > 0.5 ? "1" : "0", x, col.y - j * FONT);
+    }
+    col.y += col.speed;
+    if (col.y - col.length * FONT > canvas.height) {
+      col.y      = Math.random() * -200;
+      col.speed  = 0.4 + Math.random() * 0.8;
+      col.opacity = 0.04 + Math.random() * 0.08;
+      col.length = 8 + Math.floor(Math.random() * 20);
+    }
+  });
+  requestAnimationFrame(draw);
+}
 
-    <section class="panel">
+window.addEventListener("resize", resize);
+resize();
+draw();
 
-      <div class="panel-header">
-        <div class="lights">
-          <span class="light red"></span>
-          <span class="light"></span>
-          <span class="light"></span>
-        </div>
+/* ============ APP ============ */
+document.getElementById("userName").innerText = user.nombre;
+document.getElementById("userRole").innerText = user.rol;
 
-        <span>SECURITY_MONITOR</span>
+function setCompany(c) {
+  localStorage.setItem("legends_company", c);
+  updateCompanyUI();
+}
 
-        <span>LIVE</span>
-      </div>
+function updateCompanyUI() {
+  const c = localStorage.getItem("legends_company") || "VTR";
+  document.getElementById("btnVTR").classList.toggle("active", c === "VTR");
+  document.getElementById("btnCLARO").classList.toggle("active", c === "CLARO");
+}
 
-      <div class="panel-content">
+updateCompanyUI();
 
-        <div class="line">
-          <span class="key">STATUS</span>
-          <span class="value danger">COMPROMISED</span>
-        </div>
-
-        <div class="line">
-          <span class="key">ACCESS</span>
-          <span class="value danger">RESTRICTED</span>
-        </div>
-
-        <div class="line">
-          <span class="key">THREAT</span>
-          <span class="value">UNAUTHORIZED_ACCESS</span>
-        </div>
-
-        <div class="line">
-          <span class="key">SYSTEM</span>
-          <span class="value">ISOLATED</span>
-        </div>
-
-        <div class="line">
-          <span class="key">ACTION</span>
-          <span class="value">SERVER_LOCKDOWN</span>
-        </div>
-
-      </div>
-
-    </section>
-
-    <div class="footer">
-      INCIDENT <span class="incident">#VC-SEC-0824</span>
-      &nbsp;•&nbsp;
-      AUTOMATED SECURITY RESPONSE
-    </div>
-
-  </main>
-
+function logout() {
+  localStorage.removeItem("legends_user");
+  location.href = "login.html";
+}
+</script>
 </body>
 </html>
