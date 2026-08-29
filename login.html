@@ -1,280 +1,213 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legends Bot</title>
+  <meta charset="UTF-8">
+  <title>Legends Bot · Acceso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
 
-<script>
-const user = JSON.parse(localStorage.getItem("legends_user"));
-if (!user) location.href="login.html";
-</script>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e5e7eb;
+      overflow: hidden;
+      position: relative;
+    }
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#020617">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-<style>
-* { box-sizing: border-box; }
+    .login-card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      background: rgba(2,6,23,0.75);
+      border: 0.5px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 36px 28px 30px;
+      box-shadow: 0 2px 40px rgba(0,0,0,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      animation: fadeIn 0.4s ease;
+      margin: 20px;
+    }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #020617;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  overflow: hidden;
-  position: relative;
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-#matrixCanvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
+    .logo {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
 
-.container {
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
+    .subtitle {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
 
-.card {
-  background: rgba(2,6,23,0.75);
-  border: 0.5px solid rgba(255,255,255,0.1);
-  border-radius: 26px;
-  padding: 24px;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.7);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
+    .login-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
 
-.actions-top {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-bottom: 18px;
-}
+    .login-logo img {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: #020617;
+      object-fit: cover;
+      border: 2px solid rgba(37,99,235,0.35);
+      box-shadow: 0 0 0 6px rgba(37,99,235,0.08);
+      animation: logoIn 0.5s ease;
+    }
 
-.btn-top {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #94a3b8;
-  padding: 6px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 0.72rem;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
-}
+    @keyframes logoIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: 1; transform: scale(1); }
+    }
 
-.btn-top:hover {
-  border-color: rgba(255,255,255,0.25);
-  color: #e2e8f0;
-}
+    .field { margin-bottom: 14px; }
 
-.btn-top.danger {
-  border-color: rgba(239,68,68,0.25);
-  color: #f87171;
-}
+    .field label {
+      display: block;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
 
-.btn-top.danger:hover {
-  background: rgba(239,68,68,0.1);
-  border-color: rgba(239,68,68,0.5);
-}
+    .input-wrap { position: relative; }
 
-.user {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-}
+    .input-wrap svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: #475569;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+    }
 
-.user img {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(59,130,246,0.35);
-  box-shadow: 0 0 0 4px rgba(59,130,246,0.08);
-}
+    .field input {
+      width: 100%;
+      padding: 13px 14px 13px 38px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      background: rgba(2,6,23,0.9);
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-.user .name {
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #f1f5f9;
-}
+    .field input:focus {
+      border-color: rgba(37,99,235,0.6);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+    }
 
-.user .role {
-  font-size: 0.7rem;
-  color: #64748b;
-  margin-top: 1px;
-}
+    .field input::placeholder { color: #334155; }
 
-.company-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 14px;
-  padding: 4px;
-  margin-bottom: 22px;
-}
+    .btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.2px;
+      background: #2563eb;
+      color: #fff;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+    }
 
-.company-wrap button {
-  padding: 9px;
-  border-radius: 11px;
-  border: none;
-  background: transparent;
-  color: #64748b;
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 0.5px;
-}
+    .btn:hover  { background: #1d4ed8; }
+    .btn:active { transform: scale(0.98); }
 
-.company-wrap button.active {
-  background: #2563eb;
-  color: #fff;
-}
+    .error {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: #f87171;
+      text-align: center;
+      display: none;
+    }
 
-.section-label {
-  font-size: 0.68rem;
-  color: #475569;
-  margin-bottom: 12px;
-  padding-left: 2px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.card-btn {
-  border-radius: 18px;
-  padding: 20px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-  border: 1px solid;
-}
-
-.card-btn:hover  { transform: translateY(-3px); }
-.card-btn:active { transform: translateY(-1px) scale(0.98); }
-
-.card-btn.blue  { background: rgba(59,130,246,0.07);  border-color: rgba(59,130,246,0.18); }
-.card-btn.gold  { background: rgba(234,179,8,0.07);   border-color: rgba(234,179,8,0.18); }
-.card-btn.green { background: rgba(34,197,94,0.07);   border-color: rgba(34,197,94,0.18); }
-.card-btn.red   { background: rgba(239,68,68,0.07);   border-color: rgba(239,68,68,0.18); }
-
-.card-btn.blue:hover  { background: rgba(59,130,246,0.13); }
-.card-btn.gold:hover  { background: rgba(234,179,8,0.13); }
-.card-btn.green:hover { background: rgba(34,197,94,0.13); }
-.card-btn.red:hover   { background: rgba(239,68,68,0.13); }
-
-.card-btn .icon {
-  font-size: 26px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.card-btn.blue  .icon { color: #3b82f6; }
-.card-btn.gold  .icon { color: #eab308; }
-.card-btn.green .icon { color: #22c55e; }
-.card-btn.red   .icon { color: #ef4444; }
-
-.card-btn .label { font-weight: 600; font-size: 0.85rem; }
-
-.card-btn.blue  .label { color: #93c5fd; }
-.card-btn.gold  .label { color: #fde68a; }
-.card-btn.green .label { color: #86efac; }
-.card-btn.red   .label { color: #fca5a5; }
-
-.status {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.68rem;
-  color: #475569;
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  background: #22c55e;
-  border-radius: 50%;
-  animation: pulse 1.8s infinite;
-  flex-shrink: 0;
-}
-
-@keyframes pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
-  70%  { box-shadow: 0 0 0 7px rgba(34,197,94,0); }
-  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
-}
-</style>
+    .footer {
+      margin-top: 22px;
+      text-align: center;
+      font-size: 0.68rem;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  </style>
 </head>
 
 <body>
 <canvas id="matrixCanvas"></canvas>
 
-<div class="container">
-  <div class="card">
+<div class="login-card">
+  <div class="logo">Legends Bot</div>
+  <div class="subtitle">Acceso interno autorizado</div>
 
-    <div class="actions-top">
-      <button class="btn-top" onclick="location.href='historial.html'">Historial</button>
-      <button class="btn-top danger" onclick="logout()">Salir</button>
+  <div class="login-logo">
+    <img src="icons/icon-192.png" alt="Logo">
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <div class="input-wrap">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+      <input id="email" type="email" placeholder="usuario@legendsbot.com">
     </div>
+  </div>
 
-    <div class="user">
-      <img src="icons/icon-192.png" alt="Logo">
-      <div>
-        <div class="name" id="userName"></div>
-        <div class="role" id="userRole"></div>
-      </div>
+  <div class="field">
+    <label>Contraseña</label>
+    <div class="input-wrap">
+      <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <input id="password" type="password" placeholder="••••••••">
     </div>
+  </div>
 
-    <div class="company-wrap">
-      <button id="btnVTR"   onclick="setCompany('VTR')">VTR</button>
-      <button id="btnCLARO" onclick="setCompany('CLARO')">CLARO</button>
-    </div>
+  <button class="btn" onclick="login()">Ingresar</button>
 
-    <div class="section-label">Acciones</div>
+  <div id="error" class="error"></div>
 
-    <div class="grid">
-      <div class="card-btn blue" onclick="location.href='boleta.html'">
-        <i class="ti ti-file-invoice icon" aria-hidden="true"></i>
-        <div class="label">Boleta</div>
-      </div>
-      <div class="card-btn gold" onclick="location.href='estado.html'">
-        <i class="ti ti-chart-bar icon" aria-hidden="true"></i>
-        <div class="label">Estado de Venta</div>
-      </div>
-      <div class="card-btn green" onclick="location.href='factibilidad.html'">
-        <i class="ti ti-map-pin-check icon" aria-hidden="true"></i>
-        <div class="label">Factibilidad</div>
-      </div>
-      <div class="card-btn red" onclick="location.href='agenda.html'">
-        <i class="ti ti-calendar-event icon" aria-hidden="true"></i>
-        <div class="label">Agenda</div>
-      </div>
-    </div>
-
-    <div class="status">
-      <div class="dot"></div>
-      Conectado a Legends Bot
-    </div>
-
+  <div class="footer">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    Legends Bot · Sistema interno
   </div>
 </div>
 
@@ -325,26 +258,41 @@ window.addEventListener("resize", resize);
 resize();
 draw();
 
-/* ============ APP ============ */
-document.getElementById("userName").innerText = user.nombre;
-document.getElementById("userRole").innerText = user.rol;
+/* ============ LOGIN ============ */
+</script>
+<script src="config.js"></script>
+<script>
+const LOGIN_API = API_BASE + "/login";
 
-function setCompany(c) {
-  localStorage.setItem("legends_company", c);
-  updateCompanyUI();
+async function login() {
+  const email    = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const errorBox = document.getElementById("error");
+
+  errorBox.style.display = "none";
+  errorBox.innerText = "";
+
+  if (!email || !password) return showError("Completá todos los campos");
+
+  try {
+    const res = await fetch(LOGIN_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!data.ok) return showError(data.error || "Acceso denegado");
+    localStorage.setItem("legends_user", JSON.stringify(data.user));
+    window.location.href = "index.html";
+  } catch (err) {
+    showError("Error de conexión con la API");
+  }
 }
 
-function updateCompanyUI() {
-  const c = localStorage.getItem("legends_company") || "VTR";
-  document.getElementById("btnVTR").classList.toggle("active", c === "VTR");
-  document.getElementById("btnCLARO").classList.toggle("active", c === "CLARO");
-}
-
-updateCompanyUI();
-
-function logout() {
-  localStorage.removeItem("legends_user");
-  location.href = "login.html";
+function showError(msg) {
+  const errorBox = document.getElementById("error");
+  errorBox.innerText = msg;
+  errorBox.style.display = "block";
 }
 </script>
 </body>
