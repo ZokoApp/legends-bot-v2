@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://boost-take-designation-organisation.trycloudflare.com";
+const API_BASE = "https://specifically-modeling-telescope-scenario.trycloudflare.com";
