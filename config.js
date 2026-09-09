@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://airports-circuit-soa-presenting.trycloudflare.com";
+const API_BASE = "https://wow-send-bob-shop.trycloudflare.com";
