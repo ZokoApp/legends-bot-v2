@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://administrator-holding-electoral-expect.trycloudflare.com";
+const API_BASE = "https://smilies-travels-uploaded-refined.trycloudflare.com";
