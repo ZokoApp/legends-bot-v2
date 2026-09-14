@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://smilies-travels-uploaded-refined.trycloudflare.com";
+const API_BASE = "https://mailto-academy-modems-suspected.trycloudflare.com";
