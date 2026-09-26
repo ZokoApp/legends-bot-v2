@@ -1,2 +1,2 @@
 // config.js
-const API_BASE = "https://update-albany-intersection-wisdom.trycloudflare.com";
+const API_BASE = "https://coaches-oils-attachment-seed.trycloudflare.com";
